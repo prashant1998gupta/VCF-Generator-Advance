@@ -1,0 +1,12 @@
+{
+  "name": "VCF Generator Advance",
+  "short_name": "VCF Advance",
+  "description": "Advanced vCard generator with business card scanning, QR codes and bulk CSV tools — 100% in your browser.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f3f4f8",
+  "theme_color": "#4f46e5",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
