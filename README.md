@@ -27,9 +27,10 @@ then open http://localhost:8720. Or double-click `index.html` (camera and offlin
 No dependencies — plain Node:
 
 ```bash
-node tests/run_fixtures.js      # card-parser accuracy bench (28 noisy-OCR cards)
+node tests/run_fixtures.js      # card-parser accuracy bench (28 noisy-OCR cards, 561 checks)
 node tests/test_parser.js       # parser unit tests
 node tests/test_vcard.js        # vCard generate/parse round-trip tests
+node tests/test_ocr_merge.js    # dual-pass OCR line-merge tests
 ```
 
 Add a fixture by dropping a JSON file into `tests/fixtures/` (format documented at the top of `run_fixtures.js`).

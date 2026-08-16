@@ -182,5 +182,6 @@
     if (worker) { try { await worker.terminate(); } catch (e) {} worker = null; workerLangs = ''; }
   }
 
-  window.OCR = { recognize, dispose, similarity };
+  // mergeLineSets is exported for the test bench (tests/test_ocr_merge.js)
+  window.OCR = { recognize, dispose, similarity, mergeLineSets };
 })();
