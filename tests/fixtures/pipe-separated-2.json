@@ -1,0 +1,36 @@
+{
+  "name": "pipe-separated-2",
+  "description": "Two-sided startup card. Front: 'Name, Designation' on one line with a bullet-joined designation ('Rohan Mehta, Founder • CEO'), unlabeled mobile • email on one line, 'www... - twitter.com/...' joined by ' - ', big logo text SPARROW LABS at the bottom. Back: bullet tagline printed 'Build • Ship • Repeat' (Tesseract read the bullets as periods), 'Tel ... · Fax ...' joined by a middle dot, comma street address then 'City PIN | State | Country' with the first pipe read as capital 'I', 'GSTIN ... | LLPIN ...' footer.",
+  "pages": [
+    [
+      { "text": "Rohan Mehta, Founder • CEO", "height": 26, "confidence": 86 },
+      { "text": "+91 99870 11223 • rohan@sparrowlabs.io", "height": 15, "confidence": 82 },
+      { "text": "www.sparrowlabs.io - twitter.com/sparrowlabs", "height": 15, "confidence": 79 },
+      { "text": "SPARROW LABS", "height": 30, "confidence": 92 }
+    ],
+    [
+      { "text": "Build. Ship. Repeat.", "height": 18, "confidence": 70 },
+      { "text": "Tel +91 22 4056 7890 · Fax +91 22 4056 7891", "height": 15, "confidence": 77 },
+      { "text": "Unit 12, Raheja Platinum, Marol, Andheri East", "height": 14, "confidence": 75 },
+      { "text": "Mumbai 400059 I Maharashtra | India", "height": 14, "confidence": 72 },
+      { "text": "GSTIN 27AAKFS2345L1ZQ | LLPIN AAB-1234", "height": 12, "confidence": 64 }
+    ]
+  ],
+  "expected": {
+    "name": "Rohan Mehta",
+    "title": "Founder • CEO",
+    "company": "Sparrow Labs",
+    "mobile": ["+91 99870 11223"],
+    "work-phone": ["+91 22 4056 7890"],
+    "fax": ["+91 22 4056 7891"],
+    "email": ["rohan@sparrowlabs.io"],
+    "website": ["sparrowlabs.io"],
+    "social": ["twitter.com/sparrowlabs"],
+    "address_zip": "400059",
+    "address_city": "Mumbai",
+    "address_state": "Maharashtra",
+    "custom": { "GSTIN": "27AAKFS2345L1ZQ" },
+    "not_name": ["Rohan Mehta, Founder • CEO", "Founder • CEO", "Build. Ship. Repeat.", "SPARROW LABS"],
+    "not_company": ["Rohan Mehta", "Rohan Mehta, Founder • CEO", "Build. Ship. Repeat."]
+  }
+}

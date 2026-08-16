@@ -1,0 +1,37 @@
+{
+  "name": "indian-corporate-1",
+  "description": "Delhi manufacturing Pvt. Ltd. card, single page. ALL-CAPS company with logo junk above it, tagline + ISO line as adversarial company/name lines, two mobiles separated by '/' on one 'M:' line, 'Tel.: ... / ...  Fax: ...' on one line, 'E-mall' OCR noise on the email label, 'Regd. Office:' + 'Works:' two-address block with two PINs, CIN line at the bottom.",
+  "pages": [
+    [
+      { "text": "S8P", "height": 40, "confidence": 38 },
+      { "text": "SHREE BALAJI POLYMERS PVT. LTD.", "height": 34, "confidence": 91 },
+      { "text": "Precision Moulded Components", "height": 14, "confidence": 84 },
+      { "text": "An IS0 9001:2015 Certified Company", "height": 12, "confidence": 76 },
+      { "text": "Vikram Malhotra", "height": 30, "confidence": 93 },
+      { "text": "Director - Sales & Marketing", "height": 17, "confidence": 88 },
+      { "text": "M: +91 98110 45872 / 98100 33291", "height": 16, "confidence": 85 },
+      { "text": "Tel.: 011-4155 2200 / 2201  Fax: 011-4155 2203", "height": 16, "confidence": 81 },
+      { "text": "E-mall: vikram@shreebalajipolymers.com", "height": 16, "confidence": 83 },
+      { "text": "Web : www.shreebalajipolymers.com", "height": 16, "confidence": 86 },
+      { "text": "Regd. Office: B-14, Okhla Industrial Area, Phase-Il,", "height": 14, "confidence": 79 },
+      { "text": "New Delhi - 110020 (INDIA)", "height": 14, "confidence": 82 },
+      { "text": "Works: Plot No. 27, Sector-6, IMT Manesar,", "height": 14, "confidence": 77 },
+      { "text": "Gurugram - 122050, Haryana", "height": 14, "confidence": 80 },
+      { "text": "CIN : U25209DL2004PTC126731", "height": 11, "confidence": 68 }
+    ]
+  ],
+  "expected": {
+    "name": "Vikram Malhotra",
+    "title": "Director - Sales & Marketing",
+    "company": "Shree Balaji Polymers Pvt. Ltd.",
+    "mobile": ["+91 98110 45872", "98100 33291"],
+    "work-phone": ["011-4155 2200"],
+    "fax": ["011-4155 2203"],
+    "email": ["vikram@shreebalajipolymers.com"],
+    "website": ["shreebalajipolymers.com"],
+    "address_zip": "110020",
+    "address_city": "New Delhi",
+    "not_name": ["Precision Moulded Components", "SHREE BALAJI POLYMERS PVT. LTD."],
+    "not_company": ["An IS0 9001:2015 Certified Company", "Precision Moulded Components"]
+  }
+}

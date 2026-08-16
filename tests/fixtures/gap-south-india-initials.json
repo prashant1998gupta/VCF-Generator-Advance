@@ -1,0 +1,36 @@
+{
+  "name": "gap-south-india-initials",
+  "description": "Chennai paint distributor, single side. South-Indian naming: initial-first single given name 'S. Karthikeyan' (no dictionary surname, one 'real' word), degree line 'B.E., M.B.A.' under it, 'Managing Partner'. Company carries the honorific-looking prefix 'Sri' ('Sri Murugan Agencies') that also appears in NAME_PREFIX, printed in Title Case; Tamil-script shop name above it OCR'd by the eng model into Latin junk. 'Authorised Distributors :' brand list with pipes. Phones use SUFFIX labels in brackets — '044-2434 5678 (O), 2434 5679 (R)' — with the second landline lacking its STD code (R = residence = home phone; the bench cannot assert home-phone so only (O) is checked), plus 'Cell :' with a leading-zero 11-digit mobile '098410 12345' and a plain one. yahoo.co.in free-mail (must not become the website), 'Chennai - 600 017' spaced PIN followed by state abbreviation 'T.N.' on the next line, GSTIN with state code 33.",
+  "pages": [
+    [
+      { "text": "cyfl (WGHTGB QAM6DENEO", "height": 20, "confidence": 34 },
+      { "text": "Sri Murugan Agencies", "height": 34, "confidence": 90 },
+      { "text": "Authorised Distributors : Asian Paints | Berger | Nerolac", "height": 13, "confidence": 76 },
+      { "text": "S. Karthikeyan", "height": 28, "confidence": 91 },
+      { "text": "B.E., M.B.A.", "height": 13, "confidence": 74 },
+      { "text": "Managing Partner", "height": 16, "confidence": 88 },
+      { "text": "Ph : 044-2434 5678 (O), 2434 5679 (R)", "height": 14, "confidence": 80 },
+      { "text": "Cell : 098410 12345, 94440 67890", "height": 14, "confidence": 82 },
+      { "text": "E-mail : srimuruganagencies@yahoo.co.in", "height": 14, "confidence": 81 },
+      { "text": "No. 27, Arcot Road, Kodambakkam,", "height": 14, "confidence": 83 },
+      { "text": "Chennai - 600 017.", "height": 14, "confidence": 85 },
+      { "text": "T.N., India", "height": 14, "confidence": 79 },
+      { "text": "GSTIN : 33AAFFS1234K1ZV", "height": 12, "confidence": 71 }
+    ]
+  ],
+  "expected": {
+    "name": "S. Karthikeyan",
+    "title": "Managing Partner",
+    "company": "Sri Murugan Agencies",
+    "mobile": ["98410 12345", "94440 67890"],
+    "work-phone": ["044-2434 5678"],
+    "email": ["srimuruganagencies@yahoo.co.in"],
+    "address_zip": "600017",
+    "address_city": "Chennai",
+    "address_state": "Tamil Nadu",
+    "address_contains": ["Arcot Road"],
+    "custom": { "GSTIN": "33AAFFS1234K1ZV" },
+    "not_name": ["Sri Murugan Agencies", "Managing Partner", "B.E., M.B.A.", "Asian Paints"],
+    "not_company": ["S. Karthikeyan", "Authorised Distributors : Asian Paints | Berger | Nerolac", "Asian Paints", "T.N., India", "Managing Partner"]
+  }
+}

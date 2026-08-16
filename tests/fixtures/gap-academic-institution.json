@@ -1,0 +1,34 @@
+{
+  "name": "gap-academic-institution",
+  "description": "IIT Madras faculty card, single side — the academic / government-institution style that has no legal suffix and is built from function words. Devanagari institute name OCR'd as junk by the eng model, then ALL-CAPS 'INDIAN INSTITUTE OF TECHNOLOGY MADRAS' (5 words, contains 'of'), 'Dr.' name with inline degree and a bracketed university ', Ph.D. (Stanford)', 'Associate Professor', a 'Department of Computer Science & Engineering' line (contains company-ish words 'engineering' — must become department, not company), room/building line with no comma, 'Chennai - 600 036, Tamil Nadu, India' spaced PIN, 'Office : +91-44-2257 4350 | Fax : +91-44-2257 4352' with hyphenated country/STD codes, '.ac.in' e-mail, and a personal web page written as 'Web : www.cse.iitm.ac.in/~meera' (URL with a path and a tilde). No mobile, no GSTIN.",
+  "pages": [
+    [
+      { "text": "ARTA WeaTfaeht Geert Ferrer", "height": 14, "confidence": 32 },
+      { "text": "INDIAN INSTITUTE OF TECHNOLOGY MADRAS", "height": 26, "confidence": 88 },
+      { "text": "Dr. Meera Krishnan, Ph.D. (Stanford)", "height": 30, "confidence": 89 },
+      { "text": "Associate Professor", "height": 16, "confidence": 90 },
+      { "text": "Department of Computer Science & Engineering", "height": 15, "confidence": 84 },
+      { "text": "Room No. 314, BSB Building", "height": 14, "confidence": 78 },
+      { "text": "IIT Madras, Chennai - 600 036, Tamil Nadu, India", "height": 14, "confidence": 82 },
+      { "text": "Office : +91-44-2257 4350 | Fax : +91-44-2257 4352", "height": 14, "confidence": 80 },
+      { "text": "E-mail : meera@cse.iitm.ac.in", "height": 14, "confidence": 84 },
+      { "text": "Web : www.cse.iitm.ac.in/~meera", "height": 14, "confidence": 77 }
+    ]
+  ],
+  "expected": {
+    "name": "Dr. Meera Krishnan",
+    "title": "Associate Professor",
+    "department": "Computer Science & Engineering",
+    "company": "Indian Institute of Technology Madras",
+    "work-phone": ["+91-44-2257 4350"],
+    "fax": ["+91-44-2257 4352"],
+    "email": ["meera@cse.iitm.ac.in"],
+    "website": ["cse.iitm.ac.in"],
+    "address_zip": "600036",
+    "address_city": "Chennai",
+    "address_state": "Tamil Nadu",
+    "address_contains": ["BSB Building"],
+    "not_name": ["Associate Professor", "Department of Computer Science & Engineering", "INDIAN INSTITUTE OF TECHNOLOGY MADRAS", "Meera Krishnan, Ph.D. (Stanford)"],
+    "not_company": ["Department of Computer Science & Engineering", "Computer Science & Engineering", "Dr. Meera Krishnan, Ph.D. (Stanford)", "Associate Professor", "Room No. 314, BSB Building"]
+  }
+}

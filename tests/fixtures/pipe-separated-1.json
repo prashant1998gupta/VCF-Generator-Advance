@@ -1,0 +1,31 @@
+{
+  "name": "pipe-separated-1",
+  "description": "Indian corporate card, single side, dense pipe layout: 'Name | Title' on one printed line, single-letter labels M/E and T/F joined by pipes, 'W www... | linkedin.com/in/...', bullet-separated street address with PIN, GSTIN footer. OCR noise: one pipe read as lowercase 'l' (T/F line), one bullet read as '*' (address line).",
+  "pages": [
+    [
+      { "text": "BLUEPEAK DIGITAL PVT. LTD.", "height": 34, "confidence": 91 },
+      { "text": "Priya Nair | Head of Marketing", "height": 28, "confidence": 87 },
+      { "text": "M +91 98450 12345 | E priya.nair@bluepeakdigital.in", "height": 16, "confidence": 81 },
+      { "text": "T 080-4123 4567 l F 080-4123 4568", "height": 16, "confidence": 74 },
+      { "text": "W www.bluepeakdigital.in | linkedin.com/in/priyanair", "height": 15, "confidence": 83 },
+      { "text": "#42, 3rd Floor, Prestige Towers * MG Road • Bengaluru - 560001", "height": 14, "confidence": 71 },
+      { "text": "GSTIN : 29AABCB1234F1Z5", "height": 13, "confidence": 68 }
+    ]
+  ],
+  "expected": {
+    "name": "Priya Nair",
+    "title": "Head of Marketing",
+    "company": "BLUEPEAK DIGITAL PVT. LTD.",
+    "mobile": ["+91 98450 12345"],
+    "work-phone": ["080-4123 4567"],
+    "fax": ["080-4123 4568"],
+    "email": ["priya.nair@bluepeakdigital.in"],
+    "website": ["bluepeakdigital.in"],
+    "social": ["linkedin.com/in/priyanair"],
+    "address_zip": "560001",
+    "address_city": "Bengaluru",
+    "custom": { "GSTIN": "29AABCB1234F1Z5" },
+    "not_name": ["Priya Nair Head of Marketing", "Head of Marketing", "BLUEPEAK DIGITAL PVT. LTD."],
+    "not_company": ["Priya Nair", "Priya Nair Head of Marketing"]
+  }
+}

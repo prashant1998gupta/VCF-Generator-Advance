@@ -1,0 +1,54 @@
+{
+  "name": "edge-and-adversarial-1",
+  "description": "Jaipur hardware store, single-sided, stacked two-person layout. Adversarial elements: company 'Sharma & Sons' printed in Title Case so it reads like a person; a Title Case slogan 'Building Trust Every Day' (4 capitalised words, name-shaped) printed larger than body text; TWO partners each with their own 'Partner' line and mobile (second mobile label OCR'd 'M ;' instead of 'M :'); 'Ph : … Fax : …' on one line; gmail address; website written as 'Visit: sharmasons.in'; a 'Sister Concern : Sharma Traders' line (name-shaped, company-word) and a bare 6-digit 'Regn. No. : 348812' at the very bottom that is NOT a PIN, printed after the real 'Jaipur - 302001' PIN line. Monogram 'SS' junk at top; 'Paints' OCR'd as 'Palnts'.",
+  "pages": [
+    [
+      { "text": "SS", "height": 48, "confidence": 41 },
+      { "text": "Sharma & Sons", "height": 36, "confidence": 90 },
+      { "text": "Hardware, Sanitaryware & Palnts", "height": 14, "confidence": 73 },
+      { "text": "Building Trust Every Day", "height": 18, "confidence": 84 },
+      { "text": "Ramesh Sharma", "height": 26, "confidence": 91 },
+      { "text": "Partner", "height": 15, "confidence": 87 },
+      { "text": "M : 98290 11223", "height": 15, "confidence": 85 },
+      { "text": "Suresh Sharma", "height": 26, "confidence": 89 },
+      { "text": "Partner", "height": 15, "confidence": 86 },
+      { "text": "M ; 94140 55667", "height": 15, "confidence": 79 },
+      { "text": "Shop No. 12-13, Chandpole Bazar,", "height": 14, "confidence": 80 },
+      { "text": "Jaipur - 302001", "height": 14, "confidence": 86 },
+      { "text": "Ph : 0141-2316677  Fax : 0141-2316678", "height": 14, "confidence": 82 },
+      { "text": "E-mail : sharmasons.jpr@gmail.com", "height": 14, "confidence": 81 },
+      { "text": "Visit: sharmasons.in", "height": 14, "confidence": 78 },
+      { "text": "Sister Concern : Sharma Traders", "height": 13, "confidence": 74 },
+      { "text": "Regn. No. : 348812", "height": 12, "confidence": 66 }
+    ]
+  ],
+  "expected": {
+    "name": "Ramesh Sharma",
+    "title": "Partner",
+    "company": "Sharma & Sons",
+    "mobile": ["98290 11223", "94140 55667"],
+    "work-phone": ["0141-2316677"],
+    "fax": ["0141-2316678"],
+    "email": ["sharmasons.jpr@gmail.com"],
+    "website": ["sharmasons.in"],
+    "address_zip": "302001",
+    "address_city": "Jaipur",
+    "not_name": [
+      "Sharma & Sons",
+      "Building Trust Every Day",
+      "Sharma Traders",
+      "Sister Concern : Sharma Traders",
+      "Partner",
+      "Hardware, Sanitaryware & Paints"
+    ],
+    "not_company": [
+      "Ramesh Sharma",
+      "Suresh Sharma",
+      "Sharma Traders",
+      "Sister Concern : Sharma Traders",
+      "Building Trust Every Day",
+      "Regn. No. : 348812",
+      "Hardware, Sanitaryware & Palnts"
+    ]
+  }
+}

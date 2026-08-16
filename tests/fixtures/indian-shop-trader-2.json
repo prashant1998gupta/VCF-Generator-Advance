@@ -1,0 +1,42 @@
+{
+  "name": "indian-shop-trader-2",
+  "description": "Two-sided Chandni Chowk electrical wholesaler card. Front: small ALL-CAPS 'GSTIN NO. …' printed at the very top; company printed with 'M/s.' prefix in title case; long 'Wholesale Dealers of : …' tagline containing the word 'Electrical'; name then '(Partner)'; two mobiles with a WhatsApp icon OCR'd as '©'; landline pair on one 'Ph.' line (second number without STD code); gmail address; 'Delhi - 110006' address; no website. Back: 'OUR PRODUCTS' brand list, 'Also Available' line, 'Shop Timings' line, 'Sunday Closed', terms line, 'E. & O.E.', 'Subject to Delhi Jurisdiction', and a low-confidence Devanagari gibberish line.",
+  "pages": [
+    [
+      { "text": "GSTIN NO. 07AABFJ2345K1ZP", "height": 12, "confidence": 72 },
+      { "text": "M/s. Jai Bharat Electricals", "height": 34, "confidence": 90 },
+      { "text": "Wholesale Dealers of : Wires, Cables, Switches, Fans & All Electrical Goods", "height": 14, "confidence": 75 },
+      { "text": "Sanjay Kumar Jain", "height": 26, "confidence": 89 },
+      { "text": "(Partner)", "height": 15, "confidence": 84 },
+      { "text": "Mob. : 98730 41256, © 98100 77889", "height": 15, "confidence": 80 },
+      { "text": "Ph. : 011-23526178, 23526179", "height": 15, "confidence": 83 },
+      { "text": "E-mail : jaibharatelectricals@gmail.com", "height": 14, "confidence": 82 },
+      { "text": "Shop No. 4, Bhagirath Palace, Chandni Chowk,", "height": 15, "confidence": 78 },
+      { "text": "Delhi - 110006", "height": 15, "confidence": 85 }
+    ],
+    [
+      { "text": "OUR PRODUCTS", "height": 22, "confidence": 88 },
+      { "text": "Havells - Polycab - Finolex - Anchor - Crompton", "height": 15, "confidence": 79 },
+      { "text": "Also Available : Geysers, Coolers, Mixers, Irons & Home Appliances", "height": 14, "confidence": 77 },
+      { "text": "Shop Timings : 10:30 AM to 8:30 PM", "height": 14, "confidence": 81 },
+      { "text": "Sunday Closed", "height": 14, "confidence": 83 },
+      { "text": "Terms : Goods once sold will not be taken back.", "height": 13, "confidence": 76 },
+      { "text": "E. & O.E.", "height": 12, "confidence": 60 },
+      { "text": "Subject to Delhi Jurisdiction", "height": 13, "confidence": 74 },
+      { "text": "art fara facet aaifaerr", "height": 13, "confidence": 36 }
+    ]
+  ],
+  "expected": {
+    "name": "Sanjay Kumar Jain",
+    "title": "Partner",
+    "company": "Jai Bharat Electricals",
+    "mobile": ["98730 41256", "98100 77889"],
+    "work-phone": ["011-23526178", "23526179"],
+    "email": ["jaibharatelectricals@gmail.com"],
+    "address_zip": "110006",
+    "address_city": "Delhi",
+    "custom": { "GSTIN": "07AABFJ2345K1ZP" },
+    "not_name": ["Sunday Closed", "OUR PRODUCTS", "M/s. Jai Bharat Electricals", "Subject to Delhi Jurisdiction"],
+    "not_company": ["GSTIN NO. 07AABFJ2345K1ZP", "Wholesale Dealers of : Wires, Cables, Switches, Fans & All Electrical Goods", "OUR PRODUCTS", "Sunday Closed"]
+  }
+}

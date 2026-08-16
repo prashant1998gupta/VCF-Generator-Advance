@@ -1,0 +1,50 @@
+{
+  "name": "professional-services-1",
+  "description": "Pune consultant-physician clinic card, single side, portrait layout. All-caps hospital wordmark on top, 'Diabetes | Thyroid | Hypertension' strap that reads like a 3-word name, 'Dr.' name line with the degree string on its own line ('MBBS, MD (Medicine), FICP' — the 'MD' collides with Managing Director), real designation line under it, MMC registration number that looks like a 10-digit phone, OPD timings with am/pm, 'Clinic : … | Mob. : …' on one line, 'Emergency : landline / mobile' slash-joined pair, gmail e-mail with OCR spaces around '@', hospital website, two-line address ending 'Pune - 411004.' with a trailing full stop.",
+  "pages": [
+    [
+      { "text": "-|-", "height": 28, "confidence": 30 },
+      { "text": "SANJEEVANI MULTISPECIALITY HOSPITAL", "height": 24, "confidence": 86 },
+      { "text": "Diabetes | Thyroid | Hypertension", "height": 12, "confidence": 79 },
+      { "text": "Dr. Anirudh S. Kulkarni", "height": 34, "confidence": 91 },
+      { "text": "MBBS, MD (Medicine), FICP", "height": 15, "confidence": 80 },
+      { "text": "Consultant Physician & Diabetologist", "height": 16, "confidence": 85 },
+      { "text": "Regn. No. MMC 2009/03/2417", "height": 12, "confidence": 70 },
+      { "text": "OPD : Mon - Sat  10.30 am - 1.30 pm  &  6.00 pm - 8.30 pm", "height": 12, "confidence": 75 },
+      { "text": "Sunday : Closed  |  Emergency 24 x 7", "height": 11, "confidence": 66 },
+      { "text": "Clinic : 020-2567 8890  |  Mob. : 98500 61234", "height": 14, "confidence": 83 },
+      { "text": "Emergency : 020-2567 8899 / 98220 45678", "height": 13, "confidence": 78 },
+      { "text": "E-mail : dr.anirudh.kulkarni @ gmail.com", "height": 13, "confidence": 77 },
+      { "text": "www.sanjeevanihospital.in", "height": 12, "confidence": 82 },
+      { "text": "Sanjeevani Hospital, Plot No. 14, Sahakar Nagar No. 2,", "height": 12, "confidence": 78 },
+      { "text": "Nr. Nal Stop, Karve Road, Pune - 411004.", "height": 12, "confidence": 76 }
+    ]
+  ],
+  "expected": {
+    "name": "Dr. Anirudh S. Kulkarni",
+    "title": "Consultant Physician & Diabetologist",
+    "company": "Sanjeevani Multispeciality Hospital",
+    "mobile": ["98500 61234", "98220 45678"],
+    "work-phone": ["020-2567 8890", "020-2567 8899"],
+    "email": ["dr.anirudh.kulkarni@gmail.com"],
+    "website": ["sanjeevanihospital.in"],
+    "address_zip": "411004",
+    "address_city": "Pune",
+    "address_contains": ["Karve Road"],
+    "custom": { "Regn. No.": "MMC 2009/03/2417" },
+    "not_name": [
+      "Diabetes | Thyroid | Hypertension",
+      "MBBS, MD (Medicine), FICP",
+      "Regn. No. MMC",
+      "Consultant Physician & Diabetologist",
+      "Sanjeevani Multispeciality Hospital"
+    ],
+    "not_company": [
+      "Diabetes | Thyroid | Hypertension",
+      "MBBS, MD (Medicine), FICP",
+      "Dr. Anirudh S. Kulkarni",
+      "Consultant Physician & Diabetologist",
+      "Sanjeevani Hospital, Plot No. 14, Sahakar Nagar No. 2"
+    ]
+  }
+}

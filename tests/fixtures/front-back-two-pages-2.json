@@ -1,0 +1,56 @@
+{
+  "name": "front-back-two-pages-2",
+  "description": "Indian marble exporter, folded 3-panel card scanned as three pages. Panel 1 = cover: monogram junk, STACKED wordmark ('SARASWATI' big / 'MARBLES & GRANITES' smaller), 'Since 1982', ISO line with fi-ligature OCR error and the word 'Company', products line with 'Exporters', website. Panel 2 = person: name, letter-spaced title 'P R O P R I E T O R', two mobiles on one 'Mob.' line separated by '/', 'Tel. | Fax' on one line, 'E-mail :' with spaced colon. Panel 3 = address panel: full all-caps company header, 'Regd. Office & Showroom :' label, two-line registered address with PIN + state + country, 'Works :' second address line, GSTIN. Address is on a different panel from the phones.",
+  "pages": [
+    [
+      { "text": "SM", "height": 50, "confidence": 36 },
+      { "text": "SARASWATI", "height": 44, "confidence": 88 },
+      { "text": "MARBLES & GRANITES", "height": 22, "confidence": 86 },
+      { "text": "Since 1982", "height": 13, "confidence": 74 },
+      { "text": "An ISO 9001:2015 Certifled Company", "height": 12, "confidence": 66 },
+      { "text": "Manufacturers & Exporters of Marble, Granite & Sandstone", "height": 12, "confidence": 71 },
+      { "text": "www.saraswatimarbles.com", "height": 13, "confidence": 83 }
+    ],
+    [
+      { "text": "Rajendra Kumar Agarwal", "height": 30, "confidence": 90 },
+      { "text": "P R O P R I E T O R", "height": 14, "confidence": 70 },
+      { "text": "Mob. : +91 98290 12345 / +91 94140 55667", "height": 14, "confidence": 85 },
+      { "text": "Tel. : 01463-243318 | Fax : 01463-243320", "height": 14, "confidence": 82 },
+      { "text": "E-mail : rajendra@saraswatimarbles.com", "height": 13, "confidence": 80 }
+    ],
+    [
+      { "text": "SARASWATI MARBLES & GRANITES", "height": 16, "confidence": 85 },
+      { "text": "Regd. Office & Showroom :", "height": 12, "confidence": 78 },
+      { "text": "F-24, RIICO Industrial Area, Madanganj,", "height": 13, "confidence": 83 },
+      { "text": "Kishangarh - 305801, Dist. Ajmer, Rajasthan (INDIA)", "height": 13, "confidence": 80 },
+      { "text": "Works : Marble Mandi Road, Near Toll Plaza, Kishangarh", "height": 12, "confidence": 76 },
+      { "text": "GSTIN : 08AABCS1234F1Z5", "height": 12, "confidence": 77 }
+    ]
+  ],
+  "expected": {
+    "name": "Rajendra Kumar Agarwal",
+    "title": "Proprietor",
+    "company": "Saraswati Marbles & Granites",
+    "mobile": ["+91 98290 12345", "+91 94140 55667"],
+    "work-phone": ["01463-243318"],
+    "fax": ["01463-243320"],
+    "email": ["rajendra@saraswatimarbles.com"],
+    "website": ["saraswatimarbles.com"],
+    "address_zip": "305801",
+    "address_city": "Kishangarh",
+    "address_state": "Rajasthan",
+    "custom": { "GSTIN": "08AABCS1234F1Z5" },
+    "not_name": [
+      "SARASWATI",
+      "MARBLES & GRANITES",
+      "An ISO 9001:2015 Certified Company",
+      "P R O P R I E T O R"
+    ],
+    "not_company": [
+      "An ISO 9001:2015 Certified Company",
+      "Manufacturers & Exporters of Marble, Granite & Sandstone",
+      "Rajendra Kumar Agarwal",
+      "P R O P R I E T O R"
+    ]
+  }
+}

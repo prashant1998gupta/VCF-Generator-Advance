@@ -64,13 +64,20 @@
     additionalProperties: false
   };
 
-  const PROMPT =
-    'This image is a business / visiting card. Extract the contact details exactly as printed ' +
-    '(fix obvious OCR-style artifacts, keep original spelling of names). ' +
+  function buildPrompt(n) {
+    return (n > 1
+      ? 'These ' + n + ' images are sides / panels of the SAME business (visiting) card — front, back, or folded panels. Combine everything into ONE contact. '
+      : 'This image is a business / visiting card. ') +
+    'Extract the contact details exactly as printed (fix obvious print/scan artifacts, keep the original spelling of names). ' +
     'Use empty strings / empty arrays for anything not present. ' +
-    'Phone numbers: keep the printed formatting including country code; classify as mobile, work (landline/office/tel), or fax. ' +
+    'Name: the PERSON\'s name only (never the company). Put degrees/qualifications (MBBS, CA, B.Tech…) in "other", not in the name. ' +
+    'Title: their job designation. Department: only if printed. Company: the organisation/brand name. ' +
+    'Phone numbers: keep the printed formatting including country code; classify as mobile (cell/mob/whatsapp/10-digit Indian numbers starting 6-9), work (tel/office/landline/board/toll-free), or fax. List each distinct number once. ' +
     'Websites: bare domains are fine. Social: only include explicit social media handles/links. ' +
-    'If the card is not a business card, still extract any contact info you can see.';
+    'Address: split into street (everything before city), city, state, zip/PIN, country. If two addresses are printed, use the main/registered office. ' +
+    'Put GSTIN / CIN / PAN / registration numbers, taglines and services descriptions in "other" as "Label: value" strings. ' +
+    'If the image is not a business card, still extract any contact info you can see.';
+  }
 
   function getKey() { return (localStorage.getItem(KEY_STORAGE) || '').trim(); }
   function setKey(k) {
@@ -115,22 +122,25 @@
     return data;
   }
 
-  /** Scan a card canvas with Claude vision → review-UI fields. */
-  async function scan(canvas) {
+  /**
+   * Scan one card (given as one or more canvases — front/back/panels) with Claude vision.
+   * @param {HTMLCanvasElement|HTMLCanvasElement[]} canvases
+   */
+  async function scan(canvases) {
     if (!hasKey()) throw new Error('No API key set');
-    const b64 = canvasToJpegBase64(canvas);
+    const list = Array.isArray(canvases) ? canvases : [canvases];
+    const content = [];
+    list.forEach((c, i) => {
+      if (list.length > 1) content.push({ type: 'text', text: 'Image ' + (i + 1) + ' of ' + list.length + ':' });
+      content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: canvasToJpegBase64(c) } });
+    });
+    content.push({ type: 'text', text: buildPrompt(list.length) });
 
     const data = await request({
       model: getModel(),
       max_tokens: 2048,
       output_config: { format: { type: 'json_schema', schema: EXTRACT_SCHEMA } },
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } },
-          { type: 'text', text: PROMPT }
-        ]
-      }]
+      messages: [{ role: 'user', content }]
     });
 
     if (data.stop_reason === 'refusal') {
@@ -158,10 +168,10 @@
     };
 
     const nameParts = [x.prefix, x.firstName, x.middleName, x.lastName].map(s => (s || '').trim()).filter(Boolean);
-    push('name', nameParts.join(' '));
+    push('name', nameParts.join(' '), { prefix: (x.prefix || '').trim(), first: (x.firstName || '').trim(), middle: (x.middleName || '').trim(), last: (x.lastName || '').trim() });
     push('title', x.jobTitle);
+    push('department', x.department);
     push('company', x.company);
-    if ((x.department || '').trim()) push('notes', 'Department: ' + x.department.trim());
 
     (x.phones || []).forEach(p => {
       const cat = p.kind === 'fax' ? 'fax' : (p.kind === 'work' ? 'work-phone' : 'mobile');
@@ -173,10 +183,16 @@
       if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
       push('website', u);
     });
+    const HOME = { linkedin: 'https://linkedin.com/in/', instagram: 'https://instagram.com/', facebook: 'https://facebook.com/', twitter: 'https://x.com/', youtube: 'https://youtube.com/@', tiktok: 'https://tiktok.com/@', github: 'https://github.com/', whatsapp: 'https://wa.me/', telegram: 'https://t.me/' };
     (x.social || []).forEach(s => {
       let u = (s.url || '').trim();
-      if (u && !/^https?:\/\//i.test(u) && u.includes('.')) u = 'https://' + u;
-      push('social', u, { network: s.network === 'other' ? 'custom' : s.network });
+      const net = s.network === 'other' ? 'custom' : s.network;
+      if (u && !/^https?:\/\//i.test(u)) {
+        if (u.includes('.')) u = 'https://' + u.replace(/^\/+/, '');
+        else if (HOME[net]) u = HOME[net] + u.replace(/^@/, '').replace(/^\/+/, '');   // bare handle "@maya" → profile URL
+        else return;                                                                   // unknown network + bare handle: skip
+      }
+      push('social', u, { network: net });
     });
 
     const a = x.address || {};

@@ -1,0 +1,44 @@
+{
+  "name": "address-heavy-india-2",
+  "description": "Two-sided Pune (MIDC Bhosari) precision-engineering proprietor card. Front: logo monogram OCR'd as 'VPE ®' at very top; title-case company ending in 'Engineering Works' (no legal suffix); 'Mfrs. of :' product line; name with 'Er.' honorific and degree 'B.E. (Mech.)' printed on its own smaller line; 'Proprietor'; two mobiles as '+91-98220 34567, +91-94220 34567' behind a bare 'M :' label; 'Tel. : (020) 2712 3456  Fax : (020) 2712 3457' with bracketed STD codes; e-mail and website on one line as 'E : ... | W : ...'. Back: 'Regd. Office :' heading on its own line, address with OCR 'MlDC' (I->l), 'Plot No. T-142/3', 'Near' landmark and 'Pin : 411026' label after 'Pune, Maharashtra.'; then 'Works :' heading with 'Gat No. 1187/2', 'Tal. Khed', 'Dist. Pune 410501' (no hyphen), 'Maharashtra, INDIA'; GSTIN line; 'Approved Vendor : Tata Motors | Bajaj Auto | Mahindra' brand list; a low-confidence Latin gibberish line from a Marathi tagline.",
+  "pages": [
+    [
+      { "text": "VPE ®", "height": 38, "confidence": 58 },
+      { "text": "Vishwakarma Precision Engineering Works", "height": 30, "confidence": 88 },
+      { "text": "Mfrs. of : CNC Turned Components, Precision Machined Parts & Sub-Assemblies", "height": 13, "confidence": 73 },
+      { "text": "Er. Vikram S. Patil", "height": 27, "confidence": 89 },
+      { "text": "B.E. (Mech.)", "height": 13, "confidence": 77 },
+      { "text": "Proprietor", "height": 16, "confidence": 88 },
+      { "text": "M : +91-98220 34567, +91-94220 34567", "height": 15, "confidence": 83 },
+      { "text": "Tel. : (020) 2712 3456  Fax : (020) 2712 3457", "height": 15, "confidence": 77 },
+      { "text": "E : vikram@vpeworks.in | W : www.vpeworks.in", "height": 14, "confidence": 80 }
+    ],
+    [
+      { "text": "Regd. Office :", "height": 15, "confidence": 84 },
+      { "text": "Plot No. T-142/3, MlDC Bhosari, Telco Road,", "height": 15, "confidence": 79 },
+      { "text": "Near Bhosari Bus Depot, Pune, Maharashtra. Pin : 411026", "height": 15, "confidence": 76 },
+      { "text": "Works :", "height": 15, "confidence": 83 },
+      { "text": "Gat No. 1187/2, Near Jyotiba Temple, Kuruli, Tal. Khed,", "height": 15, "confidence": 75 },
+      { "text": "Dist. Pune 410501, Maharashtra, INDIA", "height": 15, "confidence": 78 },
+      { "text": "GSTIN : 27ABCPP1234H1ZQ", "height": 13, "confidence": 71 },
+      { "text": "Approved Vendor : Tata Motors | Bajaj Auto | Mahindra", "height": 12, "confidence": 68 },
+      { "text": "aret afaerd", "height": 12, "confidence": 31 }
+    ]
+  ],
+  "expected": {
+    "name": "Er. Vikram S. Patil",
+    "title": "Proprietor",
+    "company": "Vishwakarma Precision Engineering Works",
+    "mobile": ["+91-98220 34567", "+91-94220 34567"],
+    "work-phone": ["(020) 2712 3456"],
+    "fax": ["(020) 2712 3457"],
+    "email": ["vikram@vpeworks.in"],
+    "website": ["vpeworks.in"],
+    "address_zip": "411026",
+    "address_city": "Pune",
+    "address_state": "Maharashtra",
+    "custom": { "GSTIN": "27ABCPP1234H1ZQ" },
+    "not_name": ["VPE ®", "B.E. (Mech.)", "Proprietor", "Tal. Khed"],
+    "not_company": ["Mfrs. of : CNC Turned Components, Precision Machined Parts & Sub-Assemblies", "Approved Vendor : Tata Motors | Bajaj Auto | Mahindra", "GSTIN : 27ABCPP1234H1ZQ", "VPE ®"]
+  }
+}

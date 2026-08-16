@@ -1,0 +1,38 @@
+{
+  "name": "all-caps-name-2",
+  "description": "Two-sided card, brand-first. Front: 'Bluefern Organics' (Title Case, no legal suffix, no industry keyword the parser knows) as a huge wordmark, a lowercase tagline, and the website. Back: PRIYA NAIR in bold caps, a degree line 'B.Sc (Agri), MBA' under it, a '&' title, unlabelled icon-style phones (mobile by shape, landline followed by '(Offlce)' misread), corporate email, bare LinkedIn slug, and a Bengaluru address whose PIN is printed the common Indian way with a space ('560 038'). Noise: i->l in 'Office', mixed-case tagline, spaced PIN.",
+  "pages": [
+    [
+      { "text": "Bluefern Organics", "height": 42, "confidence": 88 },
+      { "text": "Farm-fresh. Honestly grown.", "height": 14, "confidence": 74 },
+      { "text": "www.bluefernorganics.com", "height": 14, "confidence": 84 }
+    ],
+    [
+      { "text": "PRIYA NAIR", "height": 30, "confidence": 86 },
+      { "text": "B.Sc (Agri), MBA", "height": 13, "confidence": 71 },
+      { "text": "Co-Founder & Head of Sales", "height": 15, "confidence": 88 },
+      { "text": "+91 98450 21234", "height": 15, "confidence": 83 },
+      { "text": "080 4112 6677 (Offlce)", "height": 15, "confidence": 76 },
+      { "text": "priya@bluefernorganics.com", "height": 15, "confidence": 85 },
+      { "text": "linkedin.com/in/priyanair", "height": 14, "confidence": 80 },
+      { "text": "No. 12, 3rd Cross, Indiranagar", "height": 14, "confidence": 79 },
+      { "text": "Bengaluru - 560 038", "height": 14, "confidence": 77 },
+      { "text": "Karnataka, India", "height": 14, "confidence": 81 }
+    ]
+  ],
+  "expected": {
+    "name": "Priya Nair",
+    "title": "Co-Founder & Head of Sales",
+    "company": "Bluefern Organics",
+    "mobile": ["+91 98450 21234"],
+    "work-phone": ["080 4112 6677"],
+    "email": ["priya@bluefernorganics.com"],
+    "website": ["bluefernorganics.com"],
+    "social": ["linkedin.com/in/priyanair"],
+    "address_zip": "560038",
+    "address_city": "Bengaluru",
+    "address_state": "Karnataka",
+    "not_name": ["Bluefern Organics", "B.Sc (Agri), MBA", "Co-Founder & Head of Sales"],
+    "not_company": ["PRIYA NAIR", "Farm-fresh. Honestly grown.", "Karnataka, India", "Bengaluru - 560 038"]
+  }
+}

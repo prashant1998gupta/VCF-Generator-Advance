@@ -1,0 +1,33 @@
+{
+  "name": "all-caps-name-1",
+  "description": "Single-sided Indian card, name-first layout: RAKESH SHARMA in bold caps at the top, labelled contact lines (M/T/E/W), two-line address with clean 6-digit PIN + state, then the brand wordmark 'Zentrix' (Title Case, made-up word, no legal suffix) sitting bottom-left with a tagline and a GSTIN. Caps alone cannot decide which line is the company. OCR noise: 'rn'->'m' in the tagline (Modern->Modem), the '|' separator read as 'I', spaced label colons ('E :'), low-confidence logo and GSTIN lines.",
+  "pages": [
+    [
+      { "text": "RAKESH SHARMA", "height": 30, "confidence": 89 },
+      { "text": "Business Development Manager", "height": 16, "confidence": 91 },
+      { "text": "M: +91 98110 44327 I T: 0120 456 7890", "height": 15, "confidence": 81 },
+      { "text": "E : rakesh.sharma@zentrix.in", "height": 15, "confidence": 86 },
+      { "text": "W : www.zentrix.in", "height": 15, "confidence": 84 },
+      { "text": "B-14, 2nd Floor, Sector 62", "height": 14, "confidence": 80 },
+      { "text": "Noida - 201301, Uttar Pradesh", "height": 14, "confidence": 78 },
+      { "text": "Zentrix", "height": 36, "confidence": 72 },
+      { "text": "Smart Metering for Modem Cities", "height": 12, "confidence": 66 },
+      { "text": "GSTIN : 09AABCZ1234F1Z5", "height": 12, "confidence": 69 }
+    ]
+  ],
+  "expected": {
+    "name": "Rakesh Sharma",
+    "title": "Business Development Manager",
+    "company": "Zentrix",
+    "mobile": ["+91 98110 44327"],
+    "work-phone": ["0120 456 7890"],
+    "email": ["rakesh.sharma@zentrix.in"],
+    "website": ["zentrix.in"],
+    "address_zip": "201301",
+    "address_city": "Noida",
+    "address_state": "Uttar Pradesh",
+    "custom": { "GSTIN": "09AABCZ1234F1Z5" },
+    "not_name": ["Zentrix", "Business Development Manager", "Smart Metering for Modem Cities"],
+    "not_company": ["RAKESH SHARMA", "Smart Metering for Modem Cities", "Uttar Pradesh"]
+  }
+}

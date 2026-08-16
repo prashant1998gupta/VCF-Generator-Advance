@@ -1,0 +1,51 @@
+{
+  "name": "front-back-two-pages-1",
+  "description": "US roofing contractor, double-sided card scanned as two pages. Page 1 = brand side: roof-icon logo (OCR junk), all-caps wordmark, Title-Case tagline that looks like a 4-word name, bullet product line, 'Licensed & Insured | Est. 2009', website. Page 2 = person side: name, title, department line that also looks like a name, Direct/Cell/Fax numbers in US (xxx) xxx-xxxx format, email with OCR space before '@', two-line US address with state+ZIP, QR-code junk line.",
+  "pages": [
+    [
+      { "text": "/A\\", "height": 40, "confidence": 31 },
+      { "text": "HALCYON ROOFING & EXTERIORS", "height": 38, "confidence": 90 },
+      { "text": "Protecting What Matters Most", "height": 16, "confidence": 84 },
+      { "text": "Residential * Commercial * Storm Restoration", "height": 14, "confidence": 77 },
+      { "text": "Licensed & Insured | Est. 2009", "height": 12, "confidence": 69 },
+      { "text": "www.halcyonroofing.com", "height": 15, "confidence": 88 }
+    ],
+    [
+      { "text": "Marcus T. Whitfield", "height": 32, "confidence": 91 },
+      { "text": "Senior Project Manager", "height": 18, "confidence": 88 },
+      { "text": "Storm Restoration Division", "height": 15, "confidence": 83 },
+      { "text": "Direct: (615) 297-4410", "height": 14, "confidence": 86 },
+      { "text": "Cell: (615) 830-2266", "height": 14, "confidence": 84 },
+      { "text": "Fax: (615) 297-4411", "height": 14, "confidence": 81 },
+      { "text": "marcus.whitfield @halcyonroofing.com", "height": 13, "confidence": 74 },
+      { "text": "2840 Elm Hill Pike, Suite 210", "height": 13, "confidence": 83 },
+      { "text": "Nashville, TN 37214", "height": 13, "confidence": 85 },
+      { "text": "el", "height": 10, "confidence": 28 }
+    ]
+  ],
+  "expected": {
+    "name": "Marcus T. Whitfield",
+    "title": "Senior Project Manager",
+    "company": "Halcyon Roofing & Exteriors",
+    "mobile": ["(615) 830-2266"],
+    "work-phone": ["(615) 297-4410"],
+    "fax": ["(615) 297-4411"],
+    "email": ["marcus.whitfield@halcyonroofing.com"],
+    "website": ["halcyonroofing.com"],
+    "address_zip": "37214",
+    "address_city": "Nashville",
+    "address_state": "TN",
+    "not_name": [
+      "Protecting What Matters Most",
+      "Storm Restoration Division",
+      "Halcyon Roofing & Exteriors",
+      "Senior Project Manager"
+    ],
+    "not_company": [
+      "Protecting What Matters Most",
+      "Storm Restoration Division",
+      "Residential * Commercial * Storm Restoration",
+      "Marcus T. Whitfield"
+    ]
+  }
+}

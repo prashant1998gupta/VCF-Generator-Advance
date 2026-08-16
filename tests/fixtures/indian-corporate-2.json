@@ -1,0 +1,41 @@
+{
+  "name": "indian-corporate-2",
+  "description": "Mumbai chartered-accountancy LLP card, front + back. Mixed-case company with 'LLP', a 'Chartered Accountants | Business Advisors' strap-line that looks like a 4-word name, name line carrying 'CA' prefix plus degree strings ', B.Com, FCA', 'Off.: 022-... / 11 / 12  Fax:' extension-style alternates, e-mail and website on one line separated by '|'. Back page: 'Regd. Office :' heading, address with Mumbai spaced PIN '400 069' and state, branch-city list, GSTIN and LLPIN lines.",
+  "pages": [
+    [
+      { "text": "N|", "height": 36, "confidence": 31 },
+      { "text": "Nexara Advisory Services LLP", "height": 28, "confidence": 90 },
+      { "text": "Chartered Accountants | Business Advisors", "height": 13, "confidence": 82 },
+      { "text": "CA Sunita Raghavan, B.Com, FCA", "height": 30, "confidence": 89 },
+      { "text": "Partner - Direct Tax", "height": 17, "confidence": 87 },
+      { "text": "Mob.: +91 98204 56712", "height": 16, "confidence": 86 },
+      { "text": "Off.: 022-2836 4410 / 11 / 12  Fax: 022-2836 4415", "height": 16, "confidence": 80 },
+      { "text": "E-mail : sunita.r@nexara.in | www.nexara.in", "height": 16, "confidence": 84 }
+    ],
+    [
+      { "text": "Regd. Office :", "height": 14, "confidence": 83 },
+      { "text": "504, 5th Floor, Solaris Business Park,", "height": 15, "confidence": 81 },
+      { "text": "Saki Vihar Road, Andheri (East),", "height": 15, "confidence": 79 },
+      { "text": "Mumbai - 400 069, Maharashtra.", "height": 15, "confidence": 80 },
+      { "text": "Branch : Pune | Ahmedabad | Bengaluru", "height": 13, "confidence": 74 },
+      { "text": "GSTIN : 27AAKFN4521C1ZP", "height": 13, "confidence": 72 },
+      { "text": "LLPIN : AAB-1234", "height": 12, "confidence": 66 }
+    ]
+  ],
+  "expected": {
+    "name": "CA Sunita Raghavan",
+    "title": "Partner - Direct Tax",
+    "company": "Nexara Advisory Services LLP",
+    "mobile": ["+91 98204 56712"],
+    "work-phone": ["022-2836 4410"],
+    "fax": ["022-2836 4415"],
+    "email": ["sunita.r@nexara.in"],
+    "website": ["nexara.in"],
+    "address_zip": "400069",
+    "address_city": "Mumbai",
+    "address_state": "Maharashtra",
+    "custom": { "GSTIN": "27AAKFN4521C1ZP" },
+    "not_name": ["Chartered Accountants | Business Advisors", "Pune | Ahmedabad | Bengaluru"],
+    "not_company": ["Chartered Accountants | Business Advisors", "GSTIN : 27AAKFN4521C1ZP"]
+  }
+}

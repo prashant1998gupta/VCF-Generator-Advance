@@ -1,0 +1,58 @@
+{
+  "name": "edge-and-adversarial-2",
+  "description": "Ahmedabad dry-fruit & spice wholesaler, front/back scanned as two pages. Front: 'PB' monogram junk, company 'Patel Brothers' in Title Case with NO legal suffix (person-shaped, evades every company regex), Title Case slogan 'Purity You Can Taste', then a TWO-COLUMN person block that Tesseract merged row-wise into single lines ('Bharat Patel      Kirit Patel' / 'Proprietor      Partner' / 'M : … M : …'), gmail address, website written 'Visit us @ www.patelbrothers.co.in' (the '@' is decorative, not an email), fine-print 'APMC Lic. No. 226614' (bare 6-digit code that is NOT a PIN, and appears BEFORE the real PIN in reading order) and 'GSTIN : 24AAEFP1234Q1ZR'. Back: 'Since 1968', products, 'Sister Concern : Patel Trading Co.' (name-shaped, carries company word 'Trading'), two-line address 'Ahmedabad - 380004, Gujarat', 'Tel :' landline. Primary contact = first/left person (the Proprietor).",
+  "pages": [
+    [
+      { "text": "PB", "height": 44, "confidence": 38 },
+      { "text": "Patel Brothers", "height": 38, "confidence": 91 },
+      { "text": "Purity You Can Taste", "height": 18, "confidence": 83 },
+      { "text": "Bharat Patel          Kirit Patel", "height": 24, "confidence": 88 },
+      { "text": "Proprietor            Partner", "height": 14, "confidence": 84 },
+      { "text": "M : 98250 12345       M : 99090 67890", "height": 14, "confidence": 82 },
+      { "text": "E : patelbrothers.abad@gmail.com", "height": 13, "confidence": 79 },
+      { "text": "Visit us @ www.patelbrothers.co.in", "height": 13, "confidence": 76 },
+      { "text": "APMC Lic. No. 226614", "height": 12, "confidence": 68 },
+      { "text": "GSTIN : 24AAEFP1234Q1ZR", "height": 12, "confidence": 71 }
+    ],
+    [
+      { "text": "Since 1968", "height": 13, "confidence": 77 },
+      { "text": "Wholesale & Retail Dealers in", "height": 14, "confidence": 80 },
+      { "text": "Almonds, Cashew, Pista, Raisins & Kesar", "height": 13, "confidence": 75 },
+      { "text": "Sister Concern : Patel Trading Co.", "height": 13, "confidence": 72 },
+      { "text": "Shop 21, Madhavpura Market, Shahibaug Road,", "height": 13, "confidence": 78 },
+      { "text": "Ahmedabad - 380004, Gujarat", "height": 13, "confidence": 82 },
+      { "text": "Tel : 079-2216 4455", "height": 13, "confidence": 80 }
+    ]
+  ],
+  "expected": {
+    "name": "Bharat Patel",
+    "title": "Proprietor",
+    "company": "Patel Brothers",
+    "mobile": ["98250 12345", "99090 67890"],
+    "work-phone": ["079-2216 4455"],
+    "email": ["patelbrothers.abad@gmail.com"],
+    "website": ["patelbrothers.co.in"],
+    "address_zip": "380004",
+    "address_city": "Ahmedabad",
+    "address_state": "Gujarat",
+    "custom": { "GSTIN": "24AAEFP1234Q1ZR" },
+    "not_name": [
+      "Patel Brothers",
+      "Purity You Can Taste",
+      "Bharat Patel Kirit Patel",
+      "Patel Trading Co.",
+      "Sister Concern : Patel Trading Co.",
+      "Wholesale & Retail Dealers in"
+    ],
+    "not_company": [
+      "Bharat Patel",
+      "Kirit Patel",
+      "Bharat Patel Kirit Patel",
+      "Purity You Can Taste",
+      "Sister Concern : Patel Trading Co.",
+      "Patel Trading Co.",
+      "APMC Lic. No. 226614",
+      "GSTIN : 24AAEFP1234Q1ZR"
+    ]
+  }
+}

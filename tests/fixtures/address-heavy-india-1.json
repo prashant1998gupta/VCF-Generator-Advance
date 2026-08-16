@@ -1,0 +1,40 @@
+{
+  "name": "address-heavy-india-1",
+  "description": "Single-sided Noida polymer-manufacturer card, dense small type. Top strip 'An ISO 9001 : 2015 Certified Company' printed ABOVE the ALL-CAPS 'PVT. LTD.' company name; slogan 'Committed To Quality' (3 title-case words, name-shaped); 'Manufacturers & Exporters of :' product line; comma-separated mobiles; 'Tel. : STD-num, bare-alternate  Fax : STD-num' on one line; two e-mails on one line; 'Regd. Office :' address inline-labelled and spanning 3 lines with OCR 'PIot' (l->I) and 'Phase-Ill' (III->Ill), Opp./Near landmarks, 'Noida - 201301, Distt. Gautam Budh Nagar, Uttar Pradesh'; then a 'Works :' second address in Haryana with 'Vill. & P.O.', 'Tehsil', 'Distt.' and '(Haryana) - 123501'; GSTIN at the foot.",
+  "pages": [
+    [
+      { "text": "An ISO 9001 : 2015 Certified Company", "height": 11, "confidence": 74 },
+      { "text": "SHREE GANESH POLYMERS PVT. LTD.", "height": 34, "confidence": 91 },
+      { "text": "Committed To Quality", "height": 12, "confidence": 80 },
+      { "text": "Manufacturers & Exporters of : HDPE / PP Woven Sacks, FIBC & Liners", "height": 13, "confidence": 73 },
+      { "text": "Rajeev Kumar Agarwal", "height": 28, "confidence": 92 },
+      { "text": "Director (Marketing)", "height": 16, "confidence": 86 },
+      { "text": "Mob. : +91 98110 45672, 98999 12340", "height": 15, "confidence": 84 },
+      { "text": "Tel. : 0120-4257890, 4257891  Fax : 0120-4257895", "height": 15, "confidence": 79 },
+      { "text": "E-mail : info@shreeganeshpolymers.com, rajeev@shreeganeshpolymers.com", "height": 14, "confidence": 80 },
+      { "text": "Website : www.shreeganeshpolymers.com", "height": 14, "confidence": 83 },
+      { "text": "Regd. Office : PIot No. C-47, Sector-63, Phase-Ill,", "height": 14, "confidence": 76 },
+      { "text": "Opp. Metro Pillar No. 288, Near Fortis Hospital,", "height": 14, "confidence": 75 },
+      { "text": "Noida - 201301, Distt. Gautam Budh Nagar, Uttar Pradesh", "height": 14, "confidence": 78 },
+      { "text": "Works : Plot No. 112-113, HSIIDC Industrial Estate, Sector-3,", "height": 14, "confidence": 76 },
+      { "text": "Vill. & P.O. Bawal, Tehsil Bawal, Distt. Rewari (Haryana) - 123501", "height": 14, "confidence": 71 },
+      { "text": "GSTIN : 09AABCS1234F1Z5", "height": 12, "confidence": 70 }
+    ]
+  ],
+  "expected": {
+    "name": "Rajeev Kumar Agarwal",
+    "title": "Director (Marketing)",
+    "company": "Shree Ganesh Polymers Pvt. Ltd.",
+    "mobile": ["+91 98110 45672", "98999 12340"],
+    "work-phone": ["0120-4257890", "4257891"],
+    "fax": ["0120-4257895"],
+    "email": ["info@shreeganeshpolymers.com", "rajeev@shreeganeshpolymers.com"],
+    "website": ["shreeganeshpolymers.com"],
+    "address_zip": "201301",
+    "address_city": "Noida",
+    "address_state": "Uttar Pradesh",
+    "custom": { "GSTIN": "09AABCS1234F1Z5" },
+    "not_name": ["Committed To Quality", "Director (Marketing)", "Near Fortis Hospital"],
+    "not_company": ["An ISO 9001 : 2015 Certified Company", "Manufacturers & Exporters of : HDPE / PP Woven Sacks, FIBC & Liners", "Committed To Quality", "GSTIN : 09AABCS1234F1Z5"]
+  }
+}

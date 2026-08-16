@@ -1,0 +1,33 @@
+{
+  "name": "ocr-noise-heavy-1",
+  "description": "Indian electronics-dealer card, company on top, single page, photographed under uneven light. Realistic Tesseract noise: stray '|' at line start, split word in title ('Mana ger'), '1'->'l' inside the mobile number, ' @ ' with spaces in the email, missing dots in the website ('www sharmaelectronics com'), roman numeral II read as 'll', 'S'->'5' in the GSTIN label, stray '~' at a line end. Expected values are what a human reads off the card.",
+  "pages": [
+    [
+      { "text": "| SHARMA ELECTRONICS PVT. LTD.", "height": 34, "confidence": 80 },
+      { "text": "Rakesh Sharma", "height": 30, "confidence": 90 },
+      { "text": "Sales Mana ger", "height": 18, "confidence": 68 },
+      { "text": "M : +91 98l10 22334", "height": 16, "confidence": 61 },
+      { "text": "Tel : 011-4155 0021 | Fax : 011-4155 0022 ~", "height": 15, "confidence": 76 },
+      { "text": "E : sharmaelectronics.delhi @ gmail.com", "height": 15, "confidence": 72 },
+      { "text": "www sharmaelectronics com", "height": 15, "confidence": 64 },
+      { "text": "B-14, Lajpat Nagar ll,", "height": 15, "confidence": 70 },
+      { "text": "New Delhi - 110024", "height": 15, "confidence": 84 },
+      { "text": "G5TIN : 07AAACS1234A1Z5", "height": 13, "confidence": 58 }
+    ]
+  ],
+  "expected": {
+    "name": "Rakesh Sharma",
+    "title": "Sales Manager",
+    "company": "Sharma Electronics Pvt. Ltd.",
+    "mobile": ["+91 98110 22334"],
+    "work-phone": ["011-4155 0021"],
+    "fax": ["011-4155 0022"],
+    "email": ["sharmaelectronics.delhi@gmail.com"],
+    "website": ["sharmaelectronics.com"],
+    "address_zip": "110024",
+    "address_city": "New Delhi",
+    "custom": { "GSTIN": "07AAACS1234A1Z5" },
+    "not_name": ["Sales Mana ger", "Sharma Electronics Pvt. Ltd.", "www sharmaelectronics com"],
+    "not_company": ["Rakesh Sharma", "Sales Mana ger", "www sharmaelectronics com"]
+  }
+}

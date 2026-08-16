@@ -1,0 +1,44 @@
+{
+  "name": "mixed-language-1",
+  "description": "North-Indian sweet shop card, single side, OCR'd with hin+eng so Devanagari comes through as real script. Top: small Devanagari invocation ('॥ श्री गणेशाय नमः ॥' read as '|| ... ||'), then the BIGGEST line is the Devanagari brand 'शर्मा मिष्ठान भंडार' (h38) with the English transliteration 'Sharma Mishthan Bhandar' smaller (h24, Title Case, no legal/industry keyword — reads like a 3-word person name), a Devanagari-only tagline, then the person 'Rakesh Kumar Sharma' + 'Proprietor', Hindi phone labels ('मो.' for mobile with two comma-separated numbers, 'दूरभाष' = telephone for the STD landline), an E-mail line with an OCR space before '@', two English address lines with 'City - PIN (State)' pattern, and GSTIN. Stresses: non-Latin brand line vs Latin company name (fallback picks the biggest line regardless of script), Devanagari phone labels (classification must fall back to number shape), Title-Case company line competing with the real name.",
+  "pages": [
+    [
+      { "text": "|| श्री गणेशाय नमः ||", "height": 12, "confidence": 61 },
+      { "text": "शर्मा मिष्ठान भंडार", "height": 38, "confidence": 83 },
+      { "text": "Sharma Mishthan Bhandar", "height": 24, "confidence": 90 },
+      { "text": "शुद्ध देशी घी की मिठाइयाँ एवं नमकीन", "height": 13, "confidence": 66 },
+      { "text": "Rakesh Kumar Sharma", "height": 26, "confidence": 91 },
+      { "text": "Proprietor", "height": 14, "confidence": 88 },
+      { "text": "मो. : 98370 12345, 94120 67890", "height": 15, "confidence": 78 },
+      { "text": "दूरभाष : 0135-2654321", "height": 15, "confidence": 72 },
+      { "text": "E-mail : sharmasweets.ddn @gmail.com", "height": 14, "confidence": 80 },
+      { "text": "23, Rajpur Road, Near Clock Tower,", "height": 14, "confidence": 84 },
+      { "text": "Dehradun - 248001 (Uttarakhand)", "height": 14, "confidence": 83 },
+      { "text": "GSTIN : 05ABCPS1234K1Z9", "height": 13, "confidence": 76 }
+    ]
+  ],
+  "expected": {
+    "name": "Rakesh Kumar Sharma",
+    "title": "Proprietor",
+    "company": "Sharma Mishthan Bhandar",
+    "mobile": ["98370 12345", "94120 67890"],
+    "work-phone": ["0135-2654321"],
+    "email": ["sharmasweets.ddn@gmail.com"],
+    "address_zip": "248001",
+    "address_city": "Dehradun",
+    "address_state": "Uttarakhand",
+    "custom": { "GSTIN": "05ABCPS1234K1Z9" },
+    "not_name": [
+      "Sharma Mishthan Bhandar",
+      "शर्मा मिष्ठान भंडार",
+      "शुद्ध देशी घी की मिठाइयाँ एवं नमकीन",
+      "|| श्री गणेशाय नमः ||"
+    ],
+    "not_company": [
+      "शर्मा मिष्ठान भंडार",
+      "Rakesh Kumar Sharma",
+      "शुद्ध देशी घी की मिठाइयाँ एवं नमकीन",
+      "|| श्री गणेशाय नमः ||"
+    ]
+  }
+}

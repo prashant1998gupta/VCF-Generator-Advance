@@ -1,0 +1,31 @@
+{
+  "name": "us-startup-1",
+  "description": "Single-sided, icon-led minimalist San Francisco startup card. Lowercase geometric wordmark 'loomtree' sits top-left in the largest type (no legal suffix, not caps, no dictionary company word); name in heavy weight, then 'Product Designer'; contact block uses icons instead of labels, so Tesseract emits junk glyphs: envelope icon read as a stray 'M' before the email (plus an OCR space after '@'), map-pin icon read as '9' before the street number; unlabeled US phone '(415) 555-0123'; two-line 'City, ST ZIP' address; bottom row is the bare domain and a Twitter/X handle on one line ('loomtree.co  @mayamakes').",
+  "pages": [
+    [
+      { "text": "loomtree", "height": 36, "confidence": 70 },
+      { "text": "Maya Torres", "height": 32, "confidence": 91 },
+      { "text": "Product Designer", "height": 16, "confidence": 90 },
+      { "text": "(415) 555-0123", "height": 15, "confidence": 84 },
+      { "text": "M maya@ loomtree.co", "height": 15, "confidence": 76 },
+      { "text": "9 548 Market St, Suite 220", "height": 14, "confidence": 77 },
+      { "text": "San Francisco, CA 94104", "height": 14, "confidence": 80 },
+      { "text": "loomtree.co  @mayamakes", "height": 14, "confidence": 73 }
+    ]
+  ],
+  "expected": {
+    "name": "Maya Torres",
+    "title": "Product Designer",
+    "company": "Loomtree",
+    "phone_any": ["(415) 555-0123"],
+    "email": ["maya@loomtree.co"],
+    "website": ["loomtree.co"],
+    "social": ["mayamakes"],
+    "address_zip": "94104",
+    "address_city": "San Francisco",
+    "address_state": "CA",
+    "address_contains": ["548 Market St", "Suite 220"],
+    "not_name": ["loomtree", "Product Designer", "San Francisco, CA 94104", "loomtree.co @mayamakes"],
+    "not_company": ["Maya Torres", "Product Designer", "San Francisco, CA 94104", "loomtree.co @mayamakes"]
+  }
+}

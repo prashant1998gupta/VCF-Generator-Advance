@@ -1,0 +1,31 @@
+{
+  "name": "indian-shop-trader-1",
+  "description": "Front-only Sadar Bazar hardware trader card. Devanagari 'Shree Ganeshay Namah' header comes out as OCR gibberish; ALL-CAPS shop name; 'Dealers in all kinds of…' tagline; 'Since 1987'; proprietor printed as 'Prop. RAMESH CHAND AGARWAL' on the name line; address in 'City - PIN (State)' form; Mob./Ph. labels; GSTIN at the bottom; NO email, NO website.",
+  "pages": [
+    [
+      { "text": "|| oft TOTS AA: ||", "height": 11, "confidence": 40 },
+      { "text": "GURU KRIPA TRADERS", "height": 38, "confidence": 91 },
+      { "text": "Dealers in all kinds ol Hardware, Paints & Sanitary Goods", "height": 15, "confidence": 77 },
+      { "text": "Since 1987", "height": 12, "confidence": 80 },
+      { "text": "Prop. RAMESH CHAND AGARWAL", "height": 27, "confidence": 88 },
+      { "text": "Shop No. 12, Sadar Bazar, Near Hanuman Mandir,", "height": 15, "confidence": 79 },
+      { "text": "Gurgaon - 122001 (Haryana)", "height": 15, "confidence": 82 },
+      { "text": "Mob. : 98110 22334, 93124 56789", "height": 15, "confidence": 84 },
+      { "text": "Ph. : 0124-2320145", "height": 15, "confidence": 81 },
+      { "text": "GSTIN : 06AAFPA1234H1Z5", "height": 12, "confidence": 70 }
+    ]
+  ],
+  "expected": {
+    "name": "Ramesh Chand Agarwal",
+    "title": "Proprietor",
+    "company": "Guru Kripa Traders",
+    "mobile": ["98110 22334", "93124 56789"],
+    "work-phone": ["0124-2320145"],
+    "address_zip": "122001",
+    "address_city": "Gurgaon",
+    "address_state": "Haryana",
+    "custom": { "GSTIN": "06AAFPA1234H1Z5" },
+    "not_name": ["GURU KRIPA TRADERS", "Since 1987", "Dealers in all kinds ol Hardware, Paints & Sanitary Goods"],
+    "not_company": ["Dealers in all kinds ol Hardware, Paints & Sanitary Goods", "Prop. RAMESH CHAND AGARWAL", "GSTIN : 06AAFPA1234H1Z5", "Since 1987"]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "us-startup-2",
+  "description": "Two-sided New York founder card. Front: ALL-CAPS wordmark BRIGHTFOLD, a lower-case tagline that happens to contain the industry word 'infrastructure', and the bare domain brightfold.io. Back: a small 'Hello, I'm' greeting line above the big name line 'Jordan Blake (he/him)' with inline pronouns, 'Founder & CEO', a single lowercase 'cell (212) 555-0199 · office (212) 555-0142' line (both numbers in US parenthesised format, middle-dot separator), work email, bare 'linkedin.com/in/…' path, and a single-line street address ending in a ZIP+4 ('New York, NY 10005-1402'). No legal suffix anywhere.",
+  "pages": [
+    [
+      { "text": "BRIGHTFOLD", "height": 34, "confidence": 86 },
+      { "text": "Payments infrastructure for indie makers", "height": 12, "confidence": 66 },
+      { "text": "brightfold.io", "height": 13, "confidence": 80 }
+    ],
+    [
+      { "text": "Hello, I'm", "height": 14, "confidence": 72 },
+      { "text": "Jordan Blake (he/him)", "height": 38, "confidence": 90 },
+      { "text": "Founder & CEO", "height": 16, "confidence": 88 },
+      { "text": "cell (212) 555-0199 · office (212) 555-0142", "height": 14, "confidence": 78 },
+      { "text": "jordan@brightfold.io", "height": 15, "confidence": 88 },
+      { "text": "linkedin.com/in/jordanblake", "height": 13, "confidence": 81 },
+      { "text": "77 Water St, 8th Fl, New York, NY 10005-1402", "height": 13, "confidence": 74 }
+    ]
+  ],
+  "expected": {
+    "name": "Jordan Blake",
+    "title": "Founder & CEO",
+    "company": "Brightfold",
+    "mobile": ["(212) 555-0199"],
+    "work-phone": ["(212) 555-0142"],
+    "email": ["jordan@brightfold.io"],
+    "website": ["brightfold.io"],
+    "social": ["linkedin.com/in/jordanblake"],
+    "address_zip": "10005-1402",
+    "address_city": "New York",
+    "address_state": "NY",
+    "address_contains": ["77 Water St"],
+    "not_name": ["BRIGHTFOLD", "Hello, I'm", "Hello I'm", "Founder & CEO", "Payments infrastructure for indie makers", "Jordan Blake (he/him)"],
+    "not_company": ["Payments infrastructure for indie makers", "Founder & CEO", "Jordan Blake", "Hello, I'm"]
+  }
+}

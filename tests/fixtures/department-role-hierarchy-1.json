@@ -1,0 +1,46 @@
+{
+  "name": "department-role-hierarchy-1",
+  "description": "Mumbai steel-tube manufacturer, single page, person block on TOP and company block at the BOTTOM. Designation 'Dy. General Manager' followed by a separate department line 'Sales & Marketing Dept.' (both title-like; the second must not become name/company and should be the department). ALL-CAPS 'PRAKASH STEEL TUBES LTD.' with '(A unit of Prakash Group of Companies)' group line directly under it and a 'Manufacturers of ...' tagline with l/I OCR confusion. 'Tel.:' with '(Ext. 214)' extension, 'Fax :' with spaced colon, Regd. Office address with Mumbai spaced PIN '400 093' and '(E)' abbreviation, CIN line at bottom.",
+  "pages": [
+    [
+      { "text": "Anil Kumar Verma", "height": 30, "confidence": 92 },
+      { "text": "Dy. General Manager", "height": 17, "confidence": 86 },
+      { "text": "Sales & Marketing Dept.", "height": 15, "confidence": 83 },
+      { "text": "Mob.: +91 98200 45671", "height": 15, "confidence": 85 },
+      { "text": "Tel.: +91 22 2764 5500 (Ext. 214)", "height": 15, "confidence": 79 },
+      { "text": "Fax : +91 22 2764 5599", "height": 15, "confidence": 82 },
+      { "text": "E-mail : anil.verma@prakashsteel.com", "height": 15, "confidence": 84 },
+      { "text": "PRAKASH STEEL TUBES LTD.", "height": 32, "confidence": 90 },
+      { "text": "(A unit of Prakash Group of Companies)", "height": 13, "confidence": 78 },
+      { "text": "Manufacturers of ERW & Gl Steel Tubes", "height": 12, "confidence": 71 },
+      { "text": "Regd. Office : 4th Floor, Prakash House, Plot No. C-12,", "height": 13, "confidence": 77 },
+      { "text": "MIDC, Andheri (E), Mumbai - 400 093, INDIA", "height": 13, "confidence": 80 },
+      { "text": "www.prakashsteel.com", "height": 14, "confidence": 87 },
+      { "text": "CIN : L27100MH1994PLC078321", "height": 11, "confidence": 66 }
+    ]
+  ],
+  "expected": {
+    "name": "Anil Kumar Verma",
+    "title": "Dy. General Manager",
+    "department": "Sales & Marketing",
+    "company": "Prakash Steel Tubes Ltd.",
+    "mobile": ["+91 98200 45671"],
+    "work-phone": ["+91 22 2764 5500"],
+    "fax": ["+91 22 2764 5599"],
+    "email": ["anil.verma@prakashsteel.com"],
+    "website": ["prakashsteel.com"],
+    "address_zip": "400093",
+    "address_city": "Mumbai",
+    "not_name": [
+      "PRAKASH STEEL TUBES LTD.",
+      "Dy. General Manager",
+      "Sales & Marketing Dept."
+    ],
+    "not_company": [
+      "(A unit of Prakash Group of Companies)",
+      "Manufacturers of ERW & GI Steel Tubes",
+      "Sales & Marketing Dept.",
+      "Anil Kumar Verma"
+    ]
+  }
+}

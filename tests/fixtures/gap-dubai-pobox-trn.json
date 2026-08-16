@@ -1,0 +1,39 @@
+{
+  "name": "gap-dubai-pobox-trn",
+  "description": "Dubai building-materials trading L.L.C. card carried by an Indian expat (very common in the app's market). Front: Arabic company line OCR'd as junk by the eng model, ALL-CAPS company with 'L.L.C.' written with dots, name with a single trailing initial 'Mohammed Faisal K.', 'Sales Executive', UAE-format phones with spaces ('+971 50 123 4567' mobile, '+971 4 267 8899' landline, fax), an Indian WhatsApp number on its own labelled line ('WhatsApp (India) : +91 98450 12345' — must classify as mobile), '.ae' e-mail and website. Back: 'P.O. Box 12345, Deira, Dubai, U.A.E.' address with NO street and NO postal code (P.O. Box is the address), 'TRN : 100123456700003' — a 15-digit VAT number that passes a naive 7..15-digit phone guard, and 'Trade Lic. No. 654321' — a bare 6-digit code that is NOT an Indian PIN.",
+  "pages": [
+    [
+      { "text": "aJlgall al,ll ¢,LaJ Jgill", "height": 22, "confidence": 33 },
+      { "text": "AL NOOR BUILDING MATERIALS TRADING L.L.C.", "height": 30, "confidence": 89 },
+      { "text": "Mohammed Faisal K.", "height": 28, "confidence": 90 },
+      { "text": "Sales Executive", "height": 16, "confidence": 88 },
+      { "text": "Mob : +971 50 123 4567", "height": 14, "confidence": 84 },
+      { "text": "Tel : +971 4 267 8899   Fax : +971 4 267 8898", "height": 14, "confidence": 80 },
+      { "text": "WhatsApp (India) : +91 98450 12345", "height": 14, "confidence": 79 },
+      { "text": "E-mail : faisal@alnoorbm.ae", "height": 14, "confidence": 83 },
+      { "text": "www.alnoorbm.ae", "height": 14, "confidence": 85 }
+    ],
+    [
+      { "text": "AL NOOR BUILDING MATERIALS TRADING L.L.C.", "height": 18, "confidence": 86 },
+      { "text": "P.O. Box 12345, Deira, Dubai, U.A.E.", "height": 15, "confidence": 82 },
+      { "text": "Showroom : Shop No. 7, Naif Road, Deira", "height": 14, "confidence": 77 },
+      { "text": "TRN : 100123456700003", "height": 13, "confidence": 72 },
+      { "text": "Trade Lic. No. 654321", "height": 12, "confidence": 70 }
+    ]
+  ],
+  "expected": {
+    "name": "Mohammed Faisal K.",
+    "title": "Sales Executive",
+    "company": "Al Noor Building Materials Trading L.L.C.",
+    "mobile": ["+971 50 123 4567", "+91 98450 12345"],
+    "work-phone": ["+971 4 267 8899"],
+    "fax": ["+971 4 267 8898"],
+    "email": ["faisal@alnoorbm.ae"],
+    "website": ["alnoorbm.ae"],
+    "address_city": "Dubai",
+    "address_contains": ["P.O. Box 12345"],
+    "custom": { "TRN": "100123456700003" },
+    "not_name": ["Sales Executive", "AL NOOR BUILDING MATERIALS TRADING L.L.C.", "Deira"],
+    "not_company": ["Mohammed Faisal K.", "Sales Executive", "TRN : 100123456700003", "Trade Lic. No. 654321", "P.O. Box 12345, Deira, Dubai, U.A.E."]
+  }
+}

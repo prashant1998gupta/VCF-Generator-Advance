@@ -1,0 +1,60 @@
+{
+  "name": "mixed-language-2",
+  "description": "German Mittelstand GmbH card, double-sided: page 1 German, page 2 English (same details, translated labels). OCR'd with the app's 'eng' model (no German option), so umlauts survive on the big bold lines (company, name) but degrade on small lines: 'Geschäftsführer' -> 'Geschaftsfiihrer' (ü->ii), 'Straße' -> 'StraBe' (ß->B), 'Frästeile' -> 'Frasteile'. Layout: company with GmbH (largest), German product tagline with dot separators read as '-', 'Dipl.-Ing. Jürgen Schäfer' (degree prefix on the German side only; English side prints plain 'Jürgen Schäfer'), street on its own line (no comma, no ADDR keyword), 'D-73430 Aalen' PLZ+city line, label-first phone block 'Tel. / Fax / Mobil' with +49 (0)-less international format and a national-format mobile '0171 234 56 78', corporate email + www. English side adds 'Managing Director', 'Industriestrasse 14', '73430 Aalen - Germany', duplicate phones (dedupe path), an email with an OCR space before the TLD, and a VAT line 'USt-IdNr.: DE 812 345 678' whose 9-digit group looks like a phone. Stresses: non-ASCII letters in the name (ü/ä), German 'Mobil' label, PLZ-city single-chunk address, European street words, VAT/custom field.",
+  "pages": [
+    [
+      { "text": "Schäfer Präzisionstechnik GmbH", "height": 30, "confidence": 84 },
+      { "text": "Drehteile - Frasteile - Baugruppen", "height": 13, "confidence": 69 },
+      { "text": "Dipl.-Ing. Jürgen Schäfer", "height": 28, "confidence": 77 },
+      { "text": "Geschaftsfiihrer", "height": 15, "confidence": 63 },
+      { "text": "IndustriestraBe 14", "height": 14, "confidence": 71 },
+      { "text": "D-73430 Aalen", "height": 14, "confidence": 84 },
+      { "text": "Tel.  +49 7361 5512-0", "height": 14, "confidence": 81 },
+      { "text": "Fax   +49 7361 5512-99", "height": 14, "confidence": 80 },
+      { "text": "Mobil 0171 234 56 78", "height": 14, "confidence": 79 },
+      { "text": "j.schaefer@schaefer-praezision.de", "height": 13, "confidence": 83 },
+      { "text": "www.schaefer-praezision.de", "height": 13, "confidence": 85 }
+    ],
+    [
+      { "text": "Schäfer Präzisionstechnik GmbH", "height": 30, "confidence": 82 },
+      { "text": "Precision Turned Parts * CNC Machining", "height": 13, "confidence": 72 },
+      { "text": "Jürgen Schäfer", "height": 28, "confidence": 79 },
+      { "text": "Managing Director", "height": 15, "confidence": 88 },
+      { "text": "Industriestrasse 14", "height": 14, "confidence": 80 },
+      { "text": "73430 Aalen - Germany", "height": 14, "confidence": 82 },
+      { "text": "Phone +49 7361 5512-0", "height": 14, "confidence": 82 },
+      { "text": "Mobile 0171 234 56 78", "height": 14, "confidence": 80 },
+      { "text": "j.schaefer@schaefer-praezision. de", "height": 13, "confidence": 74 },
+      { "text": "www.schaefer-praezision.de", "height": 13, "confidence": 84 },
+      { "text": "USt-IdNr.: DE 812 345 678", "height": 12, "confidence": 70 }
+    ]
+  ],
+  "expected": {
+    "name": "Jürgen Schäfer",
+    "title": "Managing Director",
+    "company": "Schäfer Präzisionstechnik GmbH",
+    "mobile": ["0171 234 56 78"],
+    "work-phone": ["+49 7361 5512-0"],
+    "fax": ["+49 7361 5512-99"],
+    "email": ["j.schaefer@schaefer-praezision.de"],
+    "website": ["schaefer-praezision.de"],
+    "address_zip": "73430",
+    "address_city": "Aalen",
+    "address_contains": ["Industriestr", "Aalen"],
+    "custom": { "USt-IdNr": "DE 812 345 678" },
+    "not_name": [
+      "Geschaftsfiihrer",
+      "Geschäftsführer",
+      "Schäfer Präzisionstechnik GmbH",
+      "Managing Director",
+      "Drehteile - Frasteile - Baugruppen"
+    ],
+    "not_company": [
+      "Jürgen Schäfer",
+      "Dipl.-Ing. Jürgen Schäfer",
+      "Drehteile - Frasteile - Baugruppen",
+      "Precision Turned Parts * CNC Machining",
+      "Geschaftsfiihrer"
+    ]
+  }
+}

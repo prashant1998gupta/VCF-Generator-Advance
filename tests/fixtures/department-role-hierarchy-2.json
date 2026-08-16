@@ -1,0 +1,54 @@
+{
+  "name": "department-role-hierarchy-2",
+  "description": "Gurugram housing-finance company card, front + back. Front: small ALL-CAPS parent-group header 'SUVIDHA GROUP' printed ABOVE the Title-Case company 'Suvidha Housing Finance Ltd.' (4 Title-Case words - name-shaped), then '(A subsidiary of Suvidha Bank Ltd.)' second Ltd. line, name with middle initial, TWO stacked designation lines 'Assistant Vice President' + 'Regional Head (North) — Retail Banking' (role + department separated by an em dash), 'Dlrect :' (i->l OCR) and 'Board : ... (Extn. 312)' landlines, 'Mobile :' 10-digit number without +91, corporate email. Back: company repeated smaller, 'Regional Office (North) :' heading, two address lines with 'Sector 39, Gurugram - 122001, Haryana' (city + state), 'Toll Free :' number, website, GSTIN.",
+  "pages": [
+    [
+      { "text": "SUVIDHA GROUP", "height": 16, "confidence": 82 },
+      { "text": "Suvidha Housing Finance Ltd.", "height": 32, "confidence": 91 },
+      { "text": "(A subsidiary of Suvidha Bank Ltd.)", "height": 12, "confidence": 76 },
+      { "text": "Priyanka S. Iyer", "height": 28, "confidence": 90 },
+      { "text": "Assistant Vice President", "height": 16, "confidence": 88 },
+      { "text": "Regional Head (North) — Retail Banking", "height": 15, "confidence": 81 },
+      { "text": "Dlrect : 0124-456 7890", "height": 15, "confidence": 74 },
+      { "text": "Board : 0124-456 7800 (Extn. 312)", "height": 15, "confidence": 78 },
+      { "text": "Mobile : 98110 23456", "height": 15, "confidence": 85 },
+      { "text": "priyanka.iyer@suvidhahfl.com", "height": 15, "confidence": 84 }
+    ],
+    [
+      { "text": "Suvidha Housing Finance Ltd.", "height": 20, "confidence": 88 },
+      { "text": "Regional Office (North) :", "height": 13, "confidence": 79 },
+      { "text": "6th Floor, Tower B, Unltech Cyber Park,", "height": 13, "confidence": 77 },
+      { "text": "Sector 39, Gurugram - 122001, Haryana", "height": 13, "confidence": 83 },
+      { "text": "Toll Free : 1800 209 4455", "height": 13, "confidence": 80 },
+      { "text": "www.suvidhahfl.com", "height": 13, "confidence": 86 },
+      { "text": "GSTIN : 06AABCS4321H1ZK", "height": 11, "confidence": 70 }
+    ]
+  ],
+  "expected": {
+    "name": "Priyanka S. Iyer",
+    "title": "Assistant Vice President",
+    "department": "Retail Banking",
+    "company": "Suvidha Housing Finance Ltd.",
+    "mobile": ["98110 23456"],
+    "work-phone": ["0124-456 7890", "0124-456 7800"],
+    "phone_any": ["1800 209 4455"],
+    "email": ["priyanka.iyer@suvidhahfl.com"],
+    "website": ["suvidhahfl.com"],
+    "address_zip": "122001",
+    "address_city": "Gurugram",
+    "address_state": "Haryana",
+    "custom": { "GSTIN": "06AABCS4321H1ZK" },
+    "not_name": [
+      "SUVIDHA GROUP",
+      "Suvidha Housing Finance Ltd.",
+      "Regional Head (North) - Retail Banking",
+      "Assistant Vice President"
+    ],
+    "not_company": [
+      "SUVIDHA GROUP",
+      "(A subsidiary of Suvidha Bank Ltd.)",
+      "Priyanka S. Iyer",
+      "Regional Head (North) - Retail Banking"
+    ]
+  }
+}

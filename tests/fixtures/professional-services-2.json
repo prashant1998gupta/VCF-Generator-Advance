@@ -1,0 +1,53 @@
+{
+  "name": "professional-services-2",
+  "description": "Indore advocate's bilingual card, front + back. Front: all-caps firm name 'BHARGAVA & ASSOCIATES', 'Advocates & Legal Consultants' strap, 'Adv.' name line with the degree strings INLINE (', B.Sc., LL.B.'), a Devanagari name line OCR'd by the eng model into junk, 'Advocate & Notary' designation, Bar Council 'Enrolment No. MP/1247/2004' (digits look like a phone; the label remainder looks like a 3-word name sitting right next to the title), a 'Practising at High Court … & District Courts' line, 'Cell :' with two comma-separated mobiles, 'Off. : … | Res. : …' landlines on one line (Res. is a home phone — the bench runner cannot assert home-phone, so only the Off. number is checked), e-mail + website on one '|' line. Back: 'Chamber :' heading, two address lines with spaced PIN 'Indore - 452 001 (M.P.)' and state in brackets, timings written without am/pm ('10.30 - 1.30 & 5.30 - 8.30') which look like a 7-digit phone, 'Also at : Civil Court, Dewas' filler.",
+  "pages": [
+    [
+      { "text": "BHARGAVA & ASSOCIATES", "height": 30, "confidence": 88 },
+      { "text": "Advocates & Legal Consultants", "height": 13, "confidence": 82 },
+      { "text": "Adv. Rajendra K. Bhargava, B.Sc., LL.B.", "height": 32, "confidence": 89 },
+      { "text": "Usia &. wpia", "height": 20, "confidence": 38 },
+      { "text": "Advocate & Notary", "height": 16, "confidence": 86 },
+      { "text": "Enrolment No. MP/1247/2004", "height": 12, "confidence": 71 },
+      { "text": "Practising at High Court of M.P. (Indore Bench) & District Courts", "height": 12, "confidence": 77 },
+      { "text": "Cell : 94250 12345, 98260 44556", "height": 14, "confidence": 84 },
+      { "text": "Off. : 0731-4046 890  |  Res. : 0731-2534 567", "height": 14, "confidence": 80 },
+      { "text": "E : rajendra@bhargavalaw.in  |  W : www.bhargavalaw.in", "height": 13, "confidence": 79 }
+    ],
+    [
+      { "text": "Chamber :", "height": 13, "confidence": 80 },
+      { "text": "Chamber No. 12, Lawyers' Chambers, District Court Campus,", "height": 13, "confidence": 76 },
+      { "text": "M.G. Road, Indore - 452 001 (M.P.)", "height": 13, "confidence": 74 },
+      { "text": "Timings : 10.30 - 1.30 & 5.30 - 8.30 (Sunday Closed)", "height": 12, "confidence": 73 },
+      { "text": "Also at : Civil Court, Dewas (Every Saturday)", "height": 11, "confidence": 69 }
+    ]
+  ],
+  "expected": {
+    "name": "Adv. Rajendra K. Bhargava",
+    "title": "Advocate & Notary",
+    "company": "Bhargava & Associates",
+    "mobile": ["94250 12345", "98260 44556"],
+    "work-phone": ["0731-4046 890"],
+    "email": ["rajendra@bhargavalaw.in"],
+    "website": ["bhargavalaw.in"],
+    "address_zip": "452001",
+    "address_city": "Indore",
+    "address_state": "Madhya Pradesh",
+    "address_contains": ["M.G. Road"],
+    "custom": { "Enrolment No.": "MP/1247/2004" },
+    "not_name": [
+      "Bhargava & Associates",
+      "Advocates & Legal Consultants",
+      "Enrolment No. MP",
+      "Advocate & Notary",
+      "Usia &. wpia"
+    ],
+    "not_company": [
+      "Advocates & Legal Consultants",
+      "Adv. Rajendra K. Bhargava, B.Sc., LL.B.",
+      "Advocate & Notary",
+      "Enrolment No. MP",
+      "Practising at High Court of M.P. (Indore Bench) & District Courts"
+    ]
+  }
+}

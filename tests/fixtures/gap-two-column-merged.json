@@ -1,0 +1,30 @@
+{
+  "name": "gap-two-column-merged",
+  "description": "Rohtak hardware shop, single side, classic two-column layout: LEFT column = shop block (caps name, tagline, address, landline), RIGHT column = person block (name, designation, mobile, email). Tesseract read it row-wise, so EVERY line contains a left-column fragment and a right-column fragment separated only by a wide run of spaces (no pipe, no bullet). Row pairing is arbitrary: the person's name shares a line with the shop name, the designation with the tagline, the mobile with the street, the e-mail with the city line. Address has NO PIN at all ('Rohtak (Haryana)' — city + bracketed state only) and the street line has no comma. Also: 'Deals in :' tagline, 'Timing : 9 AM - 8 PM' with am/pm, 'PAN : ABCPG1234K', 'Mo.' abbreviation for mobile, and one right-column fragment that is a bare 'WhatsApp' word left over from an icon label.",
+  "pages": [
+    [
+      { "text": "GUPTA HARDWARE STORE            Rajesh Kumar Gupta", "height": 30, "confidence": 88 },
+      { "text": "Deals in : Pipes, Fittings & Tools      Manager - Sales", "height": 15, "confidence": 79 },
+      { "text": "Shop No. 4, Main Bazar Road           Mo. : 98120 34567", "height": 15, "confidence": 81 },
+      { "text": "Near Old Bus Stand                    WhatsApp", "height": 15, "confidence": 76 },
+      { "text": "Rohtak (Haryana)                      E : rajesh.gupta@guptahardware.in", "height": 15, "confidence": 80 },
+      { "text": "Ph. : 01262-245678                    www.guptahardware.in", "height": 15, "confidence": 82 },
+      { "text": "Timing : 9 AM - 8 PM                  PAN : ABCPG1234K", "height": 13, "confidence": 74 }
+    ]
+  ],
+  "expected": {
+    "name": "Rajesh Kumar Gupta",
+    "title": "Manager - Sales",
+    "company": "Gupta Hardware Store",
+    "mobile": ["98120 34567"],
+    "work-phone": ["01262-245678"],
+    "email": ["rajesh.gupta@guptahardware.in"],
+    "website": ["guptahardware.in"],
+    "address_city": "Rohtak",
+    "address_state": "Haryana",
+    "address_contains": ["Main Bazar Road"],
+    "custom": { "PAN": "ABCPG1234K" },
+    "not_name": ["GUPTA HARDWARE STORE Rajesh Kumar Gupta", "GUPTA HARDWARE STORE", "Manager - Sales", "Rohtak (Haryana)"],
+    "not_company": ["GUPTA HARDWARE STORE Rajesh Kumar Gupta", "Rajesh Kumar Gupta", "Deals in : Pipes, Fittings & Tools", "Deals in : Pipes, Fittings & Tools Manager - Sales", "Rohtak (Haryana)"]
+  }
+}

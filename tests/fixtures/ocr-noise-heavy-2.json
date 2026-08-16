@@ -1,0 +1,40 @@
+{
+  "name": "ocr-noise-heavy-2",
+  "description": "US freight-broker card, name on top, two pages (front + back), shot on a phone with glare. Realistic Tesseract noise: trailing '_' after the name (underline rule), trailing '|' after the title, 'S'->'5' in the company name, '0'->'O' inside the office number, '@' read as '©' and 'l'->'I' in the personal email, '.com' read as '.c0m' in the website, stray '~' before the back-page logo text, '1'->'l' in the suite number, '@' read as '(a)' in the general sales email. Expected values are what a human reads off the card.",
+  "pages": [
+    [
+      { "text": "Melissa Ortega _", "height": 36, "confidence": 83 },
+      { "text": "Senior Account Manager |", "height": 18, "confidence": 79 },
+      { "text": "5ummit Freight Solutions LLC", "height": 26, "confidence": 71 },
+      { "text": "Office : (312) 555-O148", "height": 15, "confidence": 63 },
+      { "text": "Cell : (312) 555-0192", "height": 15, "confidence": 85 },
+      { "text": "Fax : (312) 555-0150", "height": 15, "confidence": 86 },
+      { "text": "meIissa.ortega©summitfreight.com", "height": 14, "confidence": 57 },
+      { "text": "www.summitfreight.c0m", "height": 14, "confidence": 66 }
+    ],
+    [
+      { "text": "~ SUMMIT FREIGHT SOLUTIONS", "height": 30, "confidence": 81 },
+      { "text": "2450 W Fulton Street, Suite 3l0", "height": 16, "confidence": 69 },
+      { "text": "Chicago, IL 60612", "height": 16, "confidence": 88 },
+      { "text": "sales(a)summitfreight.com", "height": 14, "confidence": 60 },
+      { "text": "| linkedin.com/in/melissa-ortega", "height": 14, "confidence": 74 },
+      { "text": "\"Moving freight, moving forward.\"", "height": 13, "confidence": 77 }
+    ]
+  ],
+  "expected": {
+    "name": "Melissa Ortega",
+    "title": "Senior Account Manager",
+    "company": "Summit Freight Solutions LLC",
+    "mobile": ["(312) 555-0192"],
+    "work-phone": ["(312) 555-0148"],
+    "fax": ["(312) 555-0150"],
+    "email": ["melissa.ortega@summitfreight.com", "sales@summitfreight.com"],
+    "website": ["summitfreight.com"],
+    "social": ["linkedin.com/in/melissa-ortega"],
+    "address_zip": "60612",
+    "address_city": "Chicago",
+    "address_state": "IL",
+    "not_name": ["Senior Account Manager", "Summit Freight Solutions LLC", "SUMMIT FREIGHT SOLUTIONS", "Moving freight, moving forward."],
+    "not_company": ["Melissa Ortega", "Senior Account Manager", "Moving freight, moving forward."]
+  }
+}
