@@ -448,8 +448,21 @@ textarea { resize: vertical; }
   background: color-mix(in srgb, var(--primary) 12%, transparent);
   box-shadow: 0 0 0 9999px rgba(16,22,28,.5); pointer-events: none;
 }
+
+/* card-corner overlay — the viewBox is set to the image's pixel size, so SVG user
+   units ARE image pixels and no devicePixelRatio maths is needed anywhere */
+.quad-overlay { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+.canvas-wrap.cropping .quad-overlay { display: none; }
+.quad-shade { fill: rgba(16,22,28,.55); }
+.quad-edge { fill: none; stroke: var(--primary); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.quad-handle { fill: var(--surface-1); stroke: var(--primary); stroke-width: 3; vector-effect: non-scaling-stroke; cursor: grab; }
+.quad-handle:hover, .quad-handle:focus-visible { fill: var(--primary); outline: none; }
+.quad-handle.dragging { cursor: grabbing; fill: var(--primary); }
+/* invisible, generously sized touch target over each handle (>=44px on a phone) */
+.quad-hit { fill: transparent; cursor: grab; }
 .tool-row { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
 .page-meta { margin: 6px 0 0; font-size: 12px; letter-spacing: .02em; }
+.page-meta.meta-warn { color: var(--danger); font-weight: 600; }
 
 /* multi-image page strip */
 #page-strip-wrap { margin-bottom: 12px; }

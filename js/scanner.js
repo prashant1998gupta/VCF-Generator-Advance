@@ -19,6 +19,7 @@
   let activeId = null;
   let mode = 'merge';        // 'merge' = all images are one card | 'batch' = each image is a different card
   let engine = 'local';
+  let cornersMode = true;    // corner quad is the primary geometry control; crop is secondary
   let cropMode = false, cropSel = null;
   let stream = null, facing = 'environment';
   let scanning = false;
@@ -43,7 +44,9 @@
     for (const f of files) {
       try {
         const src = await decodeImage(f);
-        addPage(src.source, src.width, src.height, { silent: true });
+        // keep the File: the preview is a downscaled copy, but the rectifying warp
+        // re-decodes the original so it samples the camera's own pixels
+        addPage(src.source, src.width, src.height, { silent: true, file: f });
         if (src.source && typeof src.source.close === 'function') src.source.close();   // free the ImageBitmap
         added++;
       } catch (e) {
@@ -86,7 +89,8 @@
   }
 
   function addPage(src, w, h, opts) {
-    // normalize size: OCR likes ~1500-2200px on the long side
+    const o = opts || {};
+    // preview size only — OCR no longer reads this copy when a quad is used
     const maxSide = Math.max(w, h);
     let scale = 1;
     if (maxSide > 2200) scale = 2200 / maxSide;
@@ -97,20 +101,44 @@
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(src, 0, 0, c.width, c.height);
 
-    const page = { id: uid(), original: c, geom: null, enhance: false, bw: false, deskew: 0 };
-    // auto-straighten slightly skewed photos. estimateSkew() returns the
-    // rotation that makes text rows horizontal, so apply it directly.
-    const angle = estimateSkew(c);
-    if (Math.abs(angle) >= 0.6 && Math.abs(angle) <= 12) {
-      page.geom = rotateCanvas(c, angle);
-      page.deskew = angle;
-    } else {
+    const page = {
+      id: uid(), original: c, geom: null, enhance: false, bw: false, deskew: 0,
+      file: o.file || null,
+      // corners in NORMALISED 0..1 coordinates, so one quad serves the preview and the
+      // full-resolution warp alike; canonical TL,TR,BR,BL
+      quad: CardDetect.insetQuad(1, 1, 0.04),
+      rect: null, rectInfo: null, edited: false
+    };
+    if (cornersMode) {
+      // The corner quad already encodes in-plane rotation, keystone AND crop, and it is
+      // applied in ONE resample from the original file. Deskewing here would be a second
+      // resample of an already-downscaled copy, and it would also move the pixels the
+      // quad is expressed against.
       page.geom = cloneCanvas(c);
+    } else {
+      // legacy path: auto-straighten slightly skewed photos. estimateSkew() returns the
+      // rotation that makes text rows horizontal, so apply it directly.
+      const angle = estimateSkew(c);
+      if (Math.abs(angle) >= 0.6 && Math.abs(angle) <= 12) {
+        page.geom = rotateCanvas(c, angle);
+        page.deskew = angle;
+      } else {
+        page.geom = cloneCanvas(c);
+      }
     }
     pages.push(page);
     activeId = page.id;
-    if (!(opts && opts.silent) && page.deskew) App.toast('Auto-straightened by ' + Math.abs(page.deskew).toFixed(1) + '°', 'ok');
+    if (!o.silent && page.deskew) App.toast('Auto-straightened by ' + Math.abs(page.deskew).toFixed(1) + '°', 'ok');
     return page;
+  }
+
+  /** Any manual geometry edit rewrites `geom`, which the normalised quad is measured
+      against — so the quad is reset and the warp falls back to `geom` afterwards. */
+  function markEdited(p) {
+    if (!p) return;
+    p.edited = true;
+    p.quad = CardDetect.insetQuad(1, 1, 0.04);
+    p.rect = null; p.rectInfo = null; p.dark = null;
   }
 
   function cloneCanvas(c) {
@@ -139,6 +167,7 @@
   function rotate(deg) {
     const p = active(); if (!p) return;
     p.geom = rotateCanvas(p.geom, deg);
+    markEdited(p);
     exitCropMode(); render(); renderPageStrip();
   }
 
@@ -201,7 +230,8 @@
     const n = document.createElement('canvas');
     n.width = w; n.height = h;
     n.getContext('2d').drawImage(p.geom, x, y, w, h, 0, 0, w, h);
-    p.geom = n; p.dark = null;
+    p.geom = n;
+    markEdited(p);
     exitCropMode(); render(); renderPageStrip();
   }
 
@@ -222,7 +252,12 @@
       const c = document.createElement('canvas');
       c.width = w; c.height = h;
       c.getContext('2d').drawImage(s, x, y, w, h, 0, 0, w, h);
-      return { id: uid(), original: cloneCanvas(c), geom: c, enhance: p.enhance, bw: p.bw, deskew: 0 };
+      // a split half no longer corresponds to any region of the original file, so the
+      // full-resolution warp path is not available for it — `edited` says exactly that
+      return {
+        id: uid(), original: cloneCanvas(c), geom: c, enhance: p.enhance, bw: p.bw, deskew: 0,
+        file: null, quad: CardDetect.insetQuad(1, 1, 0.04), rect: null, rectInfo: null, edited: true
+      };
     });
     pages.splice(idx, 1, ...made);
     activeId = made[0].id;
@@ -276,14 +311,18 @@
     return sum / (im.length / 4);
   }
 
-  /** Canvas exactly as the OCR engine should see it (geometry + filters + polarity). */
+  /** Canvas exactly as the OCR engine should see it (geometry + filters + polarity).
+      OCR reads the rectified card when there is one; the preview stays on `geom` so the
+      corner overlay keeps lining up with what the user is dragging. */
   function processedCanvas(p, forOcr) {
+    const base = (forOcr && p.rect) ? p.rect : p.geom;
     const out = document.createElement('canvas');
-    out.width = p.geom.width; out.height = p.geom.height;
+    out.width = base.width; out.height = base.height;
     const ctx = out.getContext('2d');
-    ctx.drawImage(p.geom, 0, 0);
-    // dark cards (light text on dark background) read far better inverted; decide once per page
-    if (p.dark == null) p.dark = meanLuma(p.geom) < 95;
+    ctx.drawImage(base, 0, 0);
+    // dark cards (light text on dark background) read far better inverted; decide once per page.
+    // Measured on the rectified card when available, so the desk no longer skews the mean.
+    if (p.dark == null) p.dark = meanLuma(base) < 95;
     const invert = forOcr && p.dark;
     if (p.enhance || p.bw || invert) {
       const im = ctx.getImageData(0, 0, out.width, out.height);
@@ -294,6 +333,14 @@
     return out;
   }
 
+  /**
+   * Canvas for the AI vision path: geometry only — never binarised, never inverted.
+   * Enhance/B&W exist to help Tesseract; a 1-bit copy destroys exactly the low-contrast
+   * detail (gold on cream, grey micro-print) that a vision model reads perfectly well in
+   * colour, so the AI engine must never be judged on the thresholded image.
+   */
+  function aiCanvas(p) { return cloneCanvas(p.rect || p.geom); }
+
   function render() {
     const p = active();
     const out = $('#scan-canvas');
@@ -303,10 +350,24 @@
     out.getContext('2d').drawImage(src, 0, 0);
     setToggle('#tool-enhance', p.enhance);
     setToggle('#tool-bw', p.bw);
-    $('#page-meta').textContent = 'Image ' + (pages.indexOf(p) + 1) + ' of ' + pages.length +
-      (p.deskew ? ' · auto-straightened ' + Math.abs(p.deskew).toFixed(1) + '°' : '') +
-      (p.dark ? ' · dark card (auto-inverted for OCR)' : '') +
-      ' · ' + p.geom.width + '×' + p.geom.height;
+    setToggle('#tool-corners', cornersMode);
+    renderQuadOverlay();
+
+    const meta = $('#page-meta');
+    const bits = ['Image ' + (pages.indexOf(p) + 1) + ' of ' + pages.length];
+    if (p.deskew) bits.push('auto-straightened ' + Math.abs(p.deskew).toFixed(1) + '°');
+    if (p.dark) bits.push('dark card (auto-inverted for OCR)');
+    const info = p.rectInfo;
+    if (info && info.accepted) {
+      // Making resolution visible is what turns a silent failure into a fixable one.
+      bits.push('flattened ' + info.canvas.width + '×' + info.canvas.height);
+      bits.push(info.pxPerMm.toFixed(1) + ' px/mm · ' + Math.round(info.dpi) + ' dpi');
+    } else if (info && info.why) {
+      bits.push('not flattened: ' + info.why);
+    }
+    bits.push(p.geom.width + '×' + p.geom.height + ' preview');
+    meta.textContent = bits.join(' · ');
+    meta.classList.toggle('meta-warn', !!(info && info.accepted && info.quality !== 'ok'));
   }
 
   function filterPixels(d, bw, width) {
@@ -434,12 +495,176 @@
       : pages.length + ' images will be scanned as ' + pages.length + ' SEPARATE contacts (a batch of different cards).';
   }
 
+  /* ---------------- card-corner overlay ---------------- */
+
+  const quadPx = (p, w, h) => p.quad.map(pt => [pt[0] * w, pt[1] * h]);
+  const clamp01 = v => v < 0 ? 0 : (v > 1 ? 1 : v);
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function el(name, attrs) {
+    const n = document.createElementNS(SVG_NS, name);
+    Object.keys(attrs).forEach(k => n.setAttribute(k, attrs[k]));
+    return n;
+  }
+
+  // `hidden` is an HTMLElement IDL attribute — assigning svg.hidden only creates an
+  // expando on an SVGElement, leaving the hidden="" attribute (and [hidden]{display:none})
+  // in place. The attribute methods are the only ones that work here.
+  const showSvg = (svg, on) => on ? svg.removeAttribute('hidden') : svg.setAttribute('hidden', '');
+
+  function renderQuadOverlay() {
+    const svg = $('#quad-overlay');
+    const p = active();
+    if (!p || !p.quad || !cornersMode || cropMode) { showSvg(svg, false); svg.textContent = ''; return; }
+    const W = p.geom.width, H = p.geom.height;
+    // viewBox in image pixels + preserveAspectRatio="none" makes SVG user units and
+    // image pixels exactly proportional on both axes — no devicePixelRatio maths anywhere
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    showSvg(svg, true);
+    svg.textContent = '';
+
+    const q = quadPx(p, W, H);
+    const inner = 'M' + q.map(pt => pt[0].toFixed(1) + ',' + pt[1].toFixed(1)).join('L') + 'Z';
+    svg.appendChild(el('path', {
+      class: 'quad-shade', 'fill-rule': 'evenodd',
+      d: 'M0,0L' + W + ',0L' + W + ',' + H + 'L0,' + H + 'Z ' + inner
+    }));
+    svg.appendChild(el('path', { class: 'quad-edge', d: inner }));
+
+    const r = Math.max(6, Math.round(Math.min(W, H) * 0.016));
+    const hit = Math.max(r * 2, Math.round(Math.min(W, H) * 0.055));
+    const LABELS = ['top-left', 'top-right', 'bottom-right', 'bottom-left'];
+    q.forEach((pt, i) => {
+      svg.appendChild(el('circle', { class: 'quad-handle', cx: pt[0], cy: pt[1], r: r, 'data-i': i }));
+      const t = el('circle', {
+        class: 'quad-hit', cx: pt[0], cy: pt[1], r: hit, 'data-i': i,
+        tabindex: '0', role: 'slider', 'aria-label': LABELS[i] + ' card corner'
+      });
+      svg.appendChild(t);
+    });
+  }
+
+  function svgPoint(e) {
+    const svg = $('#quad-overlay');
+    const p = active();
+    const r = svg.getBoundingClientRect();
+    if (!p || !r.width || !r.height) return null;
+    return {
+      x: clamp01((e.clientX - r.left) / r.width),
+      y: clamp01((e.clientY - r.top) / r.height)
+    };
+  }
+
+  function setCorner(p, i, nx, ny) {
+    p.quad[i] = [clamp01(nx), clamp01(ny)];
+    p.rect = null; p.rectInfo = null; p.dark = null;   // geometry changed: stale rectification
+  }
+
+  function bindQuad() {
+    const svg = $('#quad-overlay');
+    let drag = -1;
+
+    svg.addEventListener('pointerdown', e => {
+      const i = e.target && e.target.dataset ? parseInt(e.target.dataset.i, 10) : NaN;
+      if (isNaN(i) || !active()) return;
+      e.preventDefault();
+      drag = i;
+      try { svg.setPointerCapture(e.pointerId); } catch (err) { /* capture is a nicety */ }
+      const h = svg.querySelector('.quad-handle[data-i="' + i + '"]');
+      if (h) h.classList.add('dragging');
+    });
+    svg.addEventListener('pointermove', e => {
+      if (drag < 0) return;
+      const p = active(), pt = svgPoint(e);
+      if (!p || !pt) return;
+      setCorner(p, drag, pt.x, pt.y);
+      renderQuadOverlay();
+      const h = svg.querySelector('.quad-handle[data-i="' + drag + '"]');
+      if (h) h.classList.add('dragging');
+    });
+    const end = () => {
+      if (drag < 0) return;
+      const p = active();
+      drag = -1;
+      // a corner dragged past its neighbour would invert the winding, which transposes
+      // the warp — re-canonicalise once the gesture finishes rather than mid-drag
+      if (p) p.quad = CardDetect.canonicalise(p.quad) || p.quad;
+      renderQuadOverlay();
+      render();
+    };
+    svg.addEventListener('pointerup', end);
+    svg.addEventListener('pointercancel', end);
+
+    // keyboard: nudge a focused corner by 0.5% (2% with Shift)
+    svg.addEventListener('keydown', e => {
+      const i = e.target && e.target.dataset ? parseInt(e.target.dataset.i, 10) : NaN;
+      const p = active();
+      if (isNaN(i) || !p) return;
+      const step = e.shiftKey ? 0.02 : 0.005;
+      let dx = 0, dy = 0;
+      if (e.key === 'ArrowLeft') dx = -step;
+      else if (e.key === 'ArrowRight') dx = step;
+      else if (e.key === 'ArrowUp') dy = -step;
+      else if (e.key === 'ArrowDown') dy = step;
+      else return;
+      e.preventDefault();
+      setCorner(p, i, p.quad[i][0] + dx, p.quad[i][1] + dy);
+      renderQuadOverlay();
+      const next = $('#quad-overlay').querySelector('.quad-hit[data-i="' + i + '"]');
+      if (next) next.focus();
+      render();
+    });
+  }
+
+  /* ---------------- rectification ---------------- */
+
+  /**
+   * Full-resolution source for the warp. The preview (`geom`) is capped at 2200px of
+   * FRAME, so on a card filling 40% of the shot it holds under half the linear
+   * resolution the camera captured; re-decoding the file is what recovers it.
+   * Once a page has been manually rotated/cropped/split, `geom` is what the quad is
+   * measured against, so we warp from that instead — correct, just lower resolution.
+   */
+  async function scanSource(p) {
+    if (p.edited || !p.file) return p.geom;
+    try {
+      const d = await decodeImage(p.file);
+      const c = document.createElement('canvas');
+      c.width = d.width; c.height = d.height;
+      c.getContext('2d').drawImage(d.source, 0, 0);
+      if (d.source && typeof d.source.close === 'function') d.source.close();
+      return c;
+    } catch (e) {
+      return p.geom;                                   // never worse than today
+    }
+  }
+
+  async function rectifyPage(p) {
+    p.rect = null; p.rectInfo = null; p.dark = null;
+    if (!cornersMode) return null;
+    let src = null;
+    try {
+      src = await scanSource(p);
+      const res = CardDetect.rectify(src, quadPx(p, src.width, src.height));
+      p.rectInfo = res;
+      if (res.accepted) p.rect = res.canvas;
+      return res;
+    } catch (e) {
+      console.error('rectify failed', e);
+      return null;
+    } finally {
+      src = null;                                      // release the full-res copy
+    }
+  }
+
   /* ---------------- crop interaction ---------------- */
 
   function enterCropMode() {
     if (!active()) return;
     cropMode = true; cropSel = null;
     setToggle('#tool-crop', true);
+    renderQuadOverlay();                               // corner handles must not eat the drag
     $('#canvas-wrap').classList.add('cropping');       // touch-action:none only while cropping
     $('#crop-apply').hidden = true;
     $('#crop-rect').hidden = true;
@@ -451,6 +676,7 @@
     $('#canvas-wrap').classList.remove('cropping');
     $('#crop-apply').hidden = true;
     $('#crop-rect').hidden = true;
+    renderQuadOverlay();
   }
 
   function bindCrop() {
@@ -570,6 +796,30 @@
     const snap = pages.slice();
     const isBatch = mode === 'batch' && snap.length > 1;
     try {
+      // Flatten every page BEFORE any recognition. The quad is known up front, so the
+      // achieved px/mm is free — and refusing here costs nothing, where refusing after
+      // an 8 s OCR pass (or a mobile upload) costs the user the whole wait.
+      if (cornersMode) {
+        for (let i = 0; i < snap.length; i++) {
+          setProgress(snap.length > 1 ? 'Flattening image ' + (i + 1) + '/' + snap.length + '…' : 'Flattening the card…',
+            Math.round(i / snap.length * 100));
+          const r = await rectifyPage(snap[i]);
+          if (r && r.accepted && r.quality === 'refuse') {
+            activeId = snap[i].id;
+            renderPageStrip(); render();
+            App.toast('Image ' + (i + 1) + ': the card is only ' + r.pxPerMm.toFixed(1) +
+              ' px/mm — too far away to read small print. Move closer, fill the frame, and retake.', 'err');
+            return;
+          }
+        }
+        const low = snap.filter(p => p.rectInfo && p.rectInfo.accepted && p.rectInfo.quality === 'low');
+        if (low.length) {
+          App.toast('Low resolution (' + low[0].rectInfo.pxPerMm.toFixed(1) +
+            ' px/mm) — small print may not read. Scanning anyway…', 'warn');
+        }
+        render();
+      }
+
       if (engine === 'ai') {
         if (!AIScan.hasKey()) {
           App.toast('Add your Anthropic API key in Settings to use AI scanning', 'warn');
@@ -580,13 +830,13 @@
         if (isBatch) {
           for (let i = 0; i < snap.length; i++) {
             setProgress('Claude is reading card ' + (i + 1) + ' of ' + snap.length + '…', null);
-            const r = await AIScan.scan([processedCanvas(snap[i], false)]);
+            const r = await AIScan.scan([aiCanvas(snap[i])]);
             batchResults.push({ pageId: snap[i].id, ...r });
           }
           renderBatchResults();
         } else {
           setProgress('Claude is reading ' + (snap.length > 1 ? 'all ' + snap.length + ' images' : 'the card') + '…', null);
-          const r = await AIScan.scan(snap.map(p => processedCanvas(p, false)));
+          const r = await AIScan.scan(snap.map(p => aiCanvas(p)));
           renderResults(r.fields, r.unassigned, r.raw);
         }
       } else {
@@ -824,15 +1074,29 @@
     $('#crop-apply').addEventListener('click', applyCrop);
     $('#tool-split-v').addEventListener('click', () => split('v'));
     $('#tool-split-h').addEventListener('click', () => split('h'));
+    $('#tool-corners').addEventListener('click', () => {
+      cornersMode = !cornersMode;
+      // leaving corner mode discards any rectification so OCR reads `geom`, exactly as before
+      pages.forEach(p => { p.rect = null; p.rectInfo = null; p.dark = null; });
+      if (cornersMode) exitCropMode();
+      render(); renderPageStrip();
+      App.toast(cornersMode
+        ? 'Card edges on — drag the corners onto the card; it gets flattened and read at full resolution'
+        : 'Card edges off — the whole image is read as-is', 'ok');
+    });
     $('#tool-reset').addEventListener('click', () => {
       const p = active(); if (!p) return;
-      p.geom = cloneCanvas(p.original); p.enhance = false; p.bw = false; p.deskew = 0; p.dark = null;
+      p.geom = cloneCanvas(p.original); p.enhance = false; p.bw = false; p.deskew = 0;
+      p.quad = CardDetect.insetQuad(1, 1, 0.04);
+      p.rect = null; p.rectInfo = null; p.dark = null;
+      p.edited = !p.file;              // geom matches the file's decode again
       exitCropMode(); render(); renderPageStrip();
     });
     $('#tool-clear-all').addEventListener('click', () => { if (pages.length && confirm('Remove all ' + pages.length + ' images?')) resetAll(); });
     $('#page-move-l').addEventListener('click', () => { const p = active(); if (p) movePage(p.id, -1); });
     $('#page-move-r').addEventListener('click', () => { const p = active(); if (p) movePage(p.id, 1); });
     bindCrop();
+    bindQuad();
 
     $('#btn-camera').addEventListener('click', openCamera);
     $('#camera-shoot').addEventListener('click', () => shoot(false));

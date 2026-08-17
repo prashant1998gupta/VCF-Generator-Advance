@@ -1,12 +1,12 @@
 /* Service worker — offline support when hosted.
    Same-origin: network-first (updates always win), cache fallback offline.
    CDN libraries (version-pinned): cache-first. */
-const CACHE = 'vcfgen-v2';
+const CACHE = 'vcfgen-v3';
 const SHELL = [
   '.', 'index.html', 'css/style.css', 'manifest.json', 'assets/icon.svg',
   'js/vcard.js', 'js/form.js', 'js/preview.js', 'js/qr.js', 'js/ocr.js',
-  'js/card-parser.js', 'js/scanner.js', 'js/ai-scan.js', 'js/contacts.js',
-  'js/bulk.js', 'js/app.js'
+  'js/card-detect.js', 'js/card-parser.js', 'js/scanner.js', 'js/ai-scan.js',
+  'js/contacts.js', 'js/bulk.js', 'js/app.js'
 ];
 
 self.addEventListener('install', e => {

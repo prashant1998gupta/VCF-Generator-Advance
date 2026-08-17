@@ -20,6 +20,11 @@ const path = require('path');
 
 global.window = {};
 require(require('path').join(__dirname, '..', 'js', 'vcard.js'));
+// js/ocr.js is an IIFE that only touches Tesseract lazily, so it loads fine with a stub.
+// Loading it for real matters: the fixture text must go through the SAME line extraction
+// production uses, or the bench scores a pipeline that does not exist.
+new Function('window', 'Tesseract', fs.readFileSync(require('path').join(__dirname, '..', 'js', 'ocr.js'), 'utf8'))(global.window, {});
+const OCR = global.window.OCR;
 global.FormUI = { emptyModel: () => ({
   name: { prefix: '', first: '', middle: '', last: '', suffix: '', nickname: '', fnOverride: '' },
   work: { company: '', department: '', title: '', role: '', websites: [], calendar: '' },
@@ -44,16 +49,37 @@ const norm = s => String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ')
 const digits = s => String(s || '').replace(/\s*(?:ext\.?|extn\.?|x)\s*\d{1,5}\s*$/i, '').replace(/\D/g, '');
 const host = u => { try { return new URL(/^https?:/i.test(u) ? u : 'https://' + u).hostname.replace(/^www\./, ''); } catch (e) { return String(u).toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]; } };
 
+// Fixture line text is written the way Tesseract reports a row of a two-column card:
+// column fragments separated by a wide run of spaces. Lay each line out on a synthetic
+// monospace grid so those runs become real geometric gaps, then push it through the REAL
+// OCR.extractLines — the same code the browser runs — so the bench measures production.
+function toRawLine(l, row) {
+  const height = l.height || 20;
+  const adv = height * 0.5;                       // advance per character
+  const conf = l.confidence != null ? l.confidence : 85;
+  const y0 = row * 30, y1 = y0 + height;
+  const words = [];
+  const re = /\S+/g;
+  let m;
+  while ((m = re.exec(l.text)) !== null) {
+    words.push({
+      text: m[0], confidence: conf,
+      bbox: { x0: Math.round(m.index * adv), y0, x1: Math.round((m.index + m[0].length) * adv), y1 }
+    });
+  }
+  const x0 = words.length ? words[0].bbox.x0 : 0;
+  const x1 = words.length ? words[words.length - 1].bbox.x1 : 0;
+  return { text: l.text, confidence: conf, words, bbox: { x0, y0, x1, y1 } };
+}
+
 function toOcr(pages) {
   // emulate what scanner.js hands to CardParser after multi-page merge
   const lines = [];
   pages.forEach((pg, p) => {
-    pg.forEach((l, i) => {
-      lines.push({
-        text: l.text, confidence: l.confidence != null ? l.confidence : 85,
-        height: l.height || 20, page: p, pos: pg.length > 1 ? i / (pg.length - 1) : 0,
-        bbox: { x0: 0, y0: i * 30, x1: 500, y1: i * 30 + (l.height || 20) }
-      });
+    const extracted = OCR.extractLines({ lines: pg.map((l, i) => toRawLine(l, i)) });
+    const n = extracted.length;
+    extracted.forEach((l, i) => {
+      lines.push(Object.assign({}, l, { page: p, pos: n > 1 ? i / (n - 1) : 0 }));
     });
   });
   return { text: lines.map(l => l.text).join('\n'), lines, pageCount: pages.length };

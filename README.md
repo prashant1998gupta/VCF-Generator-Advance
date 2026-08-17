@@ -31,7 +31,11 @@ node tests/run_fixtures.js      # card-parser accuracy bench (28 noisy-OCR cards
 node tests/test_parser.js       # parser unit tests
 node tests/test_vcard.js        # vCard generate/parse round-trip tests
 node tests/test_ocr_merge.js    # dual-pass OCR line-merge tests
+node tests/test_ocr_lines.js    # OCR line extraction / two-column gap detection
 ```
+
+`run_fixtures.js` feeds its fixture text through the real `OCR.extractLines()` rather than
+straight into the parser, so the bench exercises the same line extraction the browser does.
 
 Add a fixture by dropping a JSON file into `tests/fixtures/` (format documented at the top of `run_fixtures.js`).
 

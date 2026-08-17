@@ -138,13 +138,19 @@
 
     const data = await request({
       model: getModel(),
-      max_tokens: 2048,
+      // max_tokens caps reasoning + response text together, and a dense card with several
+      // panels can fill 2048 before the JSON closes — which surfaced as the misleading
+      // "Could not parse AI response" below instead of a truncation
+      max_tokens: 4096,
       output_config: { format: { type: 'json_schema', schema: EXTRACT_SCHEMA } },
       messages: [{ role: 'user', content }]
     });
 
     if (data.stop_reason === 'refusal') {
       throw new Error('The AI declined to process this image');
+    }
+    if (data.stop_reason === 'max_tokens') {
+      throw new Error('The AI response was cut short — try scanning fewer images at once');
     }
     const textBlock = (data.content || []).find(b => b.type === 'text');
     if (!textBlock) throw new Error('Empty AI response');

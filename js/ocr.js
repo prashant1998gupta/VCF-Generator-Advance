@@ -119,13 +119,65 @@
       const words = (l.words || []).filter(wd => (wd.text || '').trim());
       // word-level confidence is more reliable than line confidence for garbage detection
       const wconf = words.length ? words.reduce((s, wd) => s + (wd.confidence || 0), 0) / words.length : (l.confidence || 0);
+      const height = Math.max(1, (bbox.y1 - bbox.y0) || 1);
       return {
-        text: (l.text || '').replace(/\s+/g, ' ').trim(),
+        text: lineText(l, words, height),
         confidence: l.confidence != null ? Math.max(l.confidence, wconf) : wconf,
         bbox,
-        height: Math.max(1, (bbox.y1 - bbox.y0) || 1)
+        height
       };
     }).filter(l => l.text);
+  }
+
+  /* ---------- column gaps ---------- */
+
+  // Tesseract reads a two-column card row-wise, so one "line" is often a left-column
+  // fragment plus an unrelated right-column fragment. The only evidence of the gutter is
+  // the horizontal gap, which card-parser.js turns into a segment break (its cleanLine
+  // maps runs of 3+ spaces to this same marker). Collapsing whitespace here would delete
+  // that evidence one step before its only consumer — which is why the gap is measured
+  // from the word boxes instead, and why the text fallback keeps wide runs intact.
+  const COL_SEP = ' ‖ ';                       // ‖  (card-parser.js SEP_RE)
+  const squash = s => String(s || '').replace(/\s+/g, '');
+
+  /** Median of a numeric array (non-mutating). */
+  function median(arr) {
+    if (!arr.length) return 0;
+    const s = arr.slice().sort((a, b) => a - b);
+    const m = s.length >> 1;
+    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  }
+
+  function lineText(l, words, height) {
+    const fallback = String(l.text || '')
+      .replace(/[^\S \t]+/g, ' ')                   // newlines/odd spaces → a plain space
+      .trim()                                       // before marking, so a blank line stays blank
+      .replace(/[ \t]{3,}/g, COL_SEP)               // keep the wide-run signal explicit
+      .replace(/[ \t]+/g, ' ')
+      .trim();
+    if (words.length < 2) return fallback;
+    const boxed = words.filter(wd => wd.bbox && wd.bbox.x1 > wd.bbox.x0);
+    if (boxed.length !== words.length) return fallback;
+
+    const gaps = [];
+    for (let i = 1; i < boxed.length; i++) gaps.push(boxed[i].bbox.x0 - boxed[i - 1].bbox.x1);
+    // A gutter is wide relative to the type size, and the line bbox (ascender→descender)
+    // is a direct proxy for that: a word space runs ~0.2-0.4em, a gutter several em.
+    const spaced = gaps.filter(g => g > 0);
+    let threshold = 1.2 * height;
+    // Letter-spaced display type ("P A T E L   B R O T H E R S") reports wide word gaps, so
+    // also require a multiple of this line's own spacing — but only once there are enough
+    // gaps for the median to be a real statistic. With one gap the median IS that gap, so
+    // the rule would veto every split on a two-word row like "Proprietor ‖ Partner".
+    if (spaced.length >= 3) threshold = Math.max(threshold, 2 * median(spaced));
+
+    let out = boxed[0].text.trim();
+    for (let i = 1; i < boxed.length; i++) {
+      out += (gaps[i - 1] > threshold ? COL_SEP : ' ') + boxed[i].text.trim();
+    }
+    out = out.replace(/\s+/g, ' ').replace(/ ?‖ ?/g, COL_SEP).trim();
+    // only trust the reconstruction when it accounts for every character Tesseract reported
+    return squash(out).replace(/‖/g, '') === squash(l.text) ? out : fallback;
   }
 
   /* ---------- merge two passes ---------- */
@@ -182,6 +234,7 @@
     if (worker) { try { await worker.terminate(); } catch (e) {} worker = null; workerLangs = ''; }
   }
 
-  // mergeLineSets is exported for the test bench (tests/test_ocr_merge.js)
-  window.OCR = { recognize, dispose, similarity, mergeLineSets };
+  // mergeLineSets and extractLines are exported for the test benches
+  // (tests/test_ocr_merge.js, tests/test_ocr_lines.js, tests/run_fixtures.js)
+  window.OCR = { recognize, dispose, similarity, mergeLineSets, extractLines };
 })();

@@ -294,6 +294,7 @@
           </div>
           <div class="canvas-wrap" id="canvas-wrap">
             <canvas id="scan-canvas"></canvas>
+            <svg id="quad-overlay" class="quad-overlay" hidden></svg>
             <div id="crop-rect" class="crop-rect" hidden></div>
           </div>
           <div class="page-meta hint" id="page-meta"></div>
@@ -302,6 +303,7 @@
             <button class="btn-mini" id="rot-right" title="Rotate 90° right">⟳ 90°</button>
             <button class="btn-mini toggle" id="tool-enhance" title="Grayscale + contrast boost">✨ Enhance</button>
             <button class="btn-mini toggle" id="tool-bw" title="Adaptive black &amp; white — handles shadows and uneven lighting">◐ B/W</button>
+            <button class="btn-mini toggle on" id="tool-corners" title="Drag the four corners onto the card — it gets flattened and read at full resolution">⛶ Card edges</button>
             <button class="btn-mini toggle" id="tool-crop" title="Drag on the image to select an area">✂ Crop</button>
             <button class="btn-mini" id="crop-apply" hidden>✔ Apply crop</button>
             <button class="btn-mini" id="tool-split-v" title="Split into left + right images (open folded card / two cards side by side)">⇹ Split L|R</button>
@@ -564,6 +566,7 @@
 <script src="js/preview.js"></script>
 <script src="js/qr.js"></script>
 <script src="js/ocr.js"></script>
+<script src="js/card-detect.js"></script>
 <script src="js/card-parser.js"></script>
 <script src="js/scanner.js"></script>
 <script src="js/ai-scan.js"></script>
