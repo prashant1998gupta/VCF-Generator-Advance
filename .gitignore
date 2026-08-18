@@ -3,3 +3,9 @@ Thumbs.db
 .claude/
 node_modules/
 *.log
+
+# secrets — never commit
+.env
+.env.*
+!.env.example
+.vercel

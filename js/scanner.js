@@ -821,21 +821,21 @@
       }
 
       if (engine === 'ai') {
-        if (!AIScan.hasKey()) {
-          App.toast('Add your Anthropic API key in Settings to use AI scanning', 'warn');
+        if (!AIScan.available()) {
+          App.toast('AI scanning is not set up on this copy — see Settings', 'warn');
           App.openModal('modal-settings');
           return;
         }
         animateIndeterminate();
         if (isBatch) {
           for (let i = 0; i < snap.length; i++) {
-            setProgress('Claude is reading card ' + (i + 1) + ' of ' + snap.length + '…', null);
+            setProgress('AI is reading card ' + (i + 1) + ' of ' + snap.length + '…', null);
             const r = await AIScan.scan([aiCanvas(snap[i])]);
             batchResults.push({ pageId: snap[i].id, ...r });
           }
           renderBatchResults();
         } else {
-          setProgress('Claude is reading ' + (snap.length > 1 ? 'all ' + snap.length + ' images' : 'the card') + '…', null);
+          setProgress('AI is reading ' + (snap.length > 1 ? 'all ' + snap.length + ' images' : 'the card') + '…', null);
           const r = await AIScan.scan(snap.map(p => aiCanvas(p)));
           renderResults(r.fields, r.unassigned, r.raw);
         }
@@ -1048,6 +1048,42 @@
     else App.toast('Nothing new to save', 'warn');
   }
 
+  /**
+   * Keep the engine selector honest about what AI scanning will actually do here:
+   * a hosted deployment with server keys needs no setup, a bare static copy does.
+   * Called on load, after the capability probe resolves, and on key changes.
+   */
+  function refreshEngineStatus() {
+    const badge = $('#engine-ai-badge');
+    const hint = $('#ai-hint');
+    if (!badge || !hint) return;
+    const m = AIScan.mode();
+
+    badge.hidden = false;
+    if (m === 'server') { badge.textContent = 'Ready'; badge.dataset.state = 'ready'; }
+    else if (m === 'byok') { badge.textContent = 'Your key'; badge.dataset.state = 'ready'; }
+    else { badge.textContent = 'Setup'; badge.dataset.state = 'setup'; }
+
+    const langRow = $('#ocr-lang-row');
+    if (langRow) langRow.style.display = engine === 'ai' ? 'none' : '';
+    hint.hidden = engine !== 'ai';
+    if (engine !== 'ai') return;
+
+    if (m === 'server') {
+      hint.innerHTML = 'Reads the card image directly — any language, any layout, no OCR guessing. ' +
+        'The image goes to this site\u2019s own server, is used only for this scan, and is never stored. ' +
+        '<strong>No API key needed.</strong>';
+    } else if (m === 'byok') {
+      hint.innerHTML = 'Sends <strong>only this card image</strong> to Anthropic using <strong>your own key</strong> ' +
+        '(<a href="#" id="open-settings-link">Settings</a>). Any language, any layout, near-perfect accuracy.';
+    } else {
+      hint.innerHTML = 'Not set up on this copy — <a href="#" id="open-settings-link">see Settings</a>. ' +
+        '🔒 Local OCR still reads every card, fully offline.';
+    }
+    const link = hint.querySelector('#open-settings-link');
+    if (link) link.addEventListener('click', e => { e.preventDefault(); App.openModal('modal-settings'); });
+  }
+
   /* ---------------- init ---------------- */
 
   function init() {
@@ -1110,10 +1146,10 @@
       b.addEventListener('click', () => {
         $$('#engine-seg button').forEach(x => x.classList.toggle('active', x === b));
         engine = b.dataset.engine;
-        $('#ocr-lang-row').style.display = engine === 'ai' ? 'none' : '';
-        $('#ai-hint').hidden = engine !== 'ai';
+        refreshEngineStatus();
       });
     });
+    refreshEngineStatus();
     $$('#mode-seg button').forEach(b => {
       b.addEventListener('click', () => {
         $$('#mode-seg button').forEach(x => { x.classList.toggle('active', x === b); x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
@@ -1121,7 +1157,6 @@
         updateModeHint();
       });
     });
-    $('#open-settings-link').addEventListener('click', e => { e.preventDefault(); App.openModal('modal-settings'); });
 
     $('#btn-scan').addEventListener('click', scan);
     $('#btn-apply-scan').addEventListener('click', () => applyToForm(false));
@@ -1132,5 +1167,5 @@
 
   function setToggle(sel, on) { $(sel).classList.toggle('on', !!on); }
 
-  window.Scanner = { init };
+  window.Scanner = { init, refreshEngineStatus };
 })();

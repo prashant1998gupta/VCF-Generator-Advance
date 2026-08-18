@@ -1,8 +1,18 @@
 /* ============================================================
-   ai-scan.js — optional AI card reading via the Anthropic API.
-   The user's own API key (stored ONLY in this browser) is used to
-   call Claude vision directly from the browser. Structured outputs
-   guarantee valid JSON.
+   ai-scan.js — AI card reading, two ways:
+
+   1. SERVER mode (preferred). The site's own /api/extract-card
+      holds the provider keys. The browser never sees a key and
+      the user never has to get one. Enabled automatically when
+      the deployment answers the capability probe.
+
+   2. BRING-YOUR-OWN-KEY mode (fallback). When there is no
+      backend — GitHub Pages, a file:// double-click, someone's
+      own fork — the user may paste an Anthropic key that is
+      kept in this browser only.
+
+   Both paths end at the same toFields(), so the review UI and
+   the rest of the app never has to know which one ran.
    Exposes global: AIScan
    ============================================================ */
 (function () {
@@ -10,7 +20,127 @@
 
   const KEY_STORAGE = 'vcfgen.apikey';
   const MODEL_STORAGE = 'vcfgen.aimodel';
-  const API_URL = 'https://api.anthropic.com/v1/messages';
+  const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
+  const SERVER_URL = 'api/extract-card';        // relative: works under any base path
+
+  /* ---------------- server capability probe ---------------- */
+
+  // { configured: bool, providers: [] } once resolved; null until probed.
+  let serverInfo = null;
+  let probePromise = null;
+
+  /**
+   * Ask our own backend whether it has any provider keys.
+   * Never throws — a missing backend is a normal, expected answer.
+   */
+  function probe() {
+    if (probePromise) return probePromise;
+    probePromise = (async () => {
+      if (location.protocol === 'file:') return (serverInfo = { configured: false, providers: [] });
+      try {
+        const ctl = new AbortController();
+        const t = setTimeout(() => ctl.abort(), 6000);
+        const res = await fetch(SERVER_URL, { method: 'GET', signal: ctl.signal, headers: { accept: 'application/json' } });
+        clearTimeout(t);
+        if (!res.ok) return (serverInfo = { configured: false, providers: [] });
+        const data = await res.json();
+        serverInfo = { configured: !!data.configured, providers: data.providers || [] };
+      } catch (e) {
+        serverInfo = { configured: false, providers: [] };
+      }
+      return serverInfo;
+    })();
+    return probePromise;
+  }
+
+  function serverReady() { return !!(serverInfo && serverInfo.configured); }
+  function serverProviders() { return (serverInfo && serverInfo.providers) || []; }
+
+  /** Which path a scan would take right now. */
+  function mode() {
+    if (serverReady()) return 'server';
+    if (hasKey()) return 'byok';
+    return 'none';
+  }
+  /** True when a scan can run without the user configuring anything. */
+  function available() { return mode() !== 'none'; }
+
+  /* ---------------- BYO key storage ---------------- */
+
+  function getKey() { return (localStorage.getItem(KEY_STORAGE) || '').trim(); }
+  function setKey(k) {
+    if (k && k.trim()) localStorage.setItem(KEY_STORAGE, k.trim());
+    else localStorage.removeItem(KEY_STORAGE);
+  }
+  function hasKey() { return !!getKey(); }
+  function getModel() { return localStorage.getItem(MODEL_STORAGE) || 'claude-haiku-4-5'; }
+  function setModel(m) { localStorage.setItem(MODEL_STORAGE, m); }
+
+  /* ---------------- image encoding ---------------- */
+
+  function fitCanvas(canvas, maxSide) {
+    const M = maxSide || 1568;
+    if (Math.max(canvas.width, canvas.height) <= M) return canvas;
+    const sc = M / Math.max(canvas.width, canvas.height);
+    const c = document.createElement('canvas');
+    c.width = Math.round(canvas.width * sc);
+    c.height = Math.round(canvas.height * sc);
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(canvas, 0, 0, c.width, c.height);
+    return c;
+  }
+  // The whole scan travels in one JSON body, and serverless hosts cap that at a
+  // few MB. Scale the encoding to the number of panels so four sides of a folded
+  // card cannot silently blow the limit — vision models downsample anyway.
+  function encodeFor(canvas, count) {
+    const side = count >= 3 ? 1280 : (count === 2 ? 1440 : 1568);
+    const q = count >= 3 ? 0.78 : (count === 2 ? 0.84 : 0.9);
+    return fitCanvas(canvas, side).toDataURL('image/jpeg', q);
+  }
+  function canvasToDataUrl(canvas, q) { return fitCanvas(canvas).toDataURL('image/jpeg', q || 0.9); }
+  function canvasToBase64(canvas) { return canvasToDataUrl(canvas).split(',')[1]; }
+
+  /* ---------------- server path ---------------- */
+
+  // Human-readable text for every failure the endpoint can report. The server
+  // deliberately never forwards upstream error bodies (they can quote the
+  // request, and a quoted request can contain a credential), so the mapping
+  // lives here where it can also suggest what to do next.
+  const SERVER_ERRORS = {
+    origin_rejected: 'Blocked — AI scanning only works from the app’s own page.',
+    request_too_large: 'Those images are too large. Crop tighter, or scan fewer sides at once.',
+    image_too_large: 'That image is too large. Crop tighter or use a smaller photo.',
+    invalid_dimensions: 'That image is too small to read — use a larger photo of the card.',
+    mime_mismatch: 'That file is not the image type it claims to be.'
+  };
+
+  async function serverScan(canvases) {
+    const images = canvases.map(c => ({ dataUrl: encodeFor(c, canvases.length) }));
+    let res;
+    try {
+      res = await fetch(SERVER_URL, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ images })
+      });
+    } catch (e) {
+      throw new Error('Could not reach the scanning service — check your connection.');
+    }
+
+    let data = {};
+    try { data = await res.json(); } catch (e) {}
+
+    if (!res.ok) {
+      const err = new Error(SERVER_ERRORS[data.code] || data.error || ('Scan failed (HTTP ' + res.status + ')'));
+      err.code = data.code;
+      throw err;
+    }
+    const x = data.extraction || {};
+    return { ...toFields(x), raw: JSON.stringify(x, null, 2), provider: data.provider, model: data.model };
+  }
+
+  /* ---------------- bring-your-own-key path ---------------- */
 
   const EXTRACT_SCHEMA = {
     type: 'object',
@@ -79,32 +209,8 @@
     'If the image is not a business card, still extract any contact info you can see.';
   }
 
-  function getKey() { return (localStorage.getItem(KEY_STORAGE) || '').trim(); }
-  function setKey(k) {
-    if (k && k.trim()) localStorage.setItem(KEY_STORAGE, k.trim());
-    else localStorage.removeItem(KEY_STORAGE);
-  }
-  function hasKey() { return !!getKey(); }
-  function getModel() { return localStorage.getItem(MODEL_STORAGE) || 'claude-haiku-4-5'; }
-  function setModel(m) { localStorage.setItem(MODEL_STORAGE, m); }
-
-  function canvasToJpegBase64(canvas, maxSide) {
-    const M = maxSide || 1568;
-    let c = canvas;
-    if (Math.max(canvas.width, canvas.height) > M) {
-      const sc = M / Math.max(canvas.width, canvas.height);
-      c = document.createElement('canvas');
-      c.width = Math.round(canvas.width * sc);
-      c.height = Math.round(canvas.height * sc);
-      const ctx = c.getContext('2d');
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(canvas, 0, 0, c.width, c.height);
-    }
-    return c.toDataURL('image/jpeg', 0.9).split(',')[1];
-  }
-
   async function request(body) {
-    const res = await fetch(API_URL, {
+    const res = await fetch(ANTHROPIC_URL, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -122,17 +228,11 @@
     return data;
   }
 
-  /**
-   * Scan one card (given as one or more canvases — front/back/panels) with Claude vision.
-   * @param {HTMLCanvasElement|HTMLCanvasElement[]} canvases
-   */
-  async function scan(canvases) {
-    if (!hasKey()) throw new Error('No API key set');
-    const list = Array.isArray(canvases) ? canvases : [canvases];
+  async function byokScan(list) {
     const content = [];
     list.forEach((c, i) => {
       if (list.length > 1) content.push({ type: 'text', text: 'Image ' + (i + 1) + ' of ' + list.length + ':' });
-      content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: canvasToJpegBase64(c) } });
+      content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: canvasToBase64(c) } });
     });
     content.push({ type: 'text', text: buildPrompt(list.length) });
 
@@ -164,8 +264,38 @@
       if (!m) throw new Error('Could not parse AI response');
       parsed = JSON.parse(m[0]);
     }
-    return { ...toFields(parsed), raw: textBlock.text };
+    return { ...toFields(parsed), raw: textBlock.text, provider: 'anthropic', model: getModel() };
   }
+
+  /* ---------------- entry point ---------------- */
+
+  /**
+   * Scan one card (given as one or more canvases — front/back/panels).
+   * Routes to the backend when the deployment has keys, otherwise to the
+   * user's own key. Falls back from server to own key if the server is
+   * rate-limited or its providers are all down.
+   * @param {HTMLCanvasElement|HTMLCanvasElement[]} canvases
+   */
+  async function scan(canvases) {
+    const list = Array.isArray(canvases) ? canvases : [canvases];
+    if (serverReady()) {
+      try {
+        return await serverScan(list);
+      } catch (e) {
+        // The user has their own key: a server hiccup shouldn't stop the scan.
+        // A rejected image, though, will be rejected by any backend — don't
+        // spend the user's own quota re-proving it.
+        const clientFault = e.code === 'invalid_image' || e.code === 'mime_mismatch' ||
+          e.code === 'invalid_dimensions' || e.code === 'invalid_image_count';
+        if (!hasKey() || clientFault) throw e;
+        return await byokScan(list);
+      }
+    }
+    if (!hasKey()) throw new Error('AI scanning is not available here — use Local OCR, or add your own key in Settings.');
+    return byokScan(list);
+  }
+
+  /* ---------------- shared: model JSON -> review-UI fields ---------------- */
 
   function toFields(x) {
     const fields = [];
@@ -183,9 +313,9 @@
       const cat = p.kind === 'fax' ? 'fax' : (p.kind === 'work' ? 'work-phone' : 'mobile');
       push(cat, p.number);
     });
-    (x.emails || []).forEach(e => push('email', e.toLowerCase()));
+    (x.emails || []).forEach(e => push('email', String(e).toLowerCase()));
     (x.websites || []).forEach(w => {
-      let u = w.trim();
+      let u = String(w).trim();
       if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
       push('website', u);
     });
@@ -224,5 +354,9 @@
     return !!(data && data.id);
   }
 
-  window.AIScan = { scan, testKey, hasKey, getKey, setKey, getModel, setModel };
+  window.AIScan = {
+    scan, testKey, toFields,
+    hasKey, getKey, setKey, getModel, setModel,
+    probe, serverReady, serverProviders, mode, available
+  };
 })();

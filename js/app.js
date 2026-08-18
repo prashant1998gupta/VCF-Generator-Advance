@@ -205,14 +205,57 @@
 
   /* ---------------- settings ---------------- */
 
+  const PROVIDER_NAMES = { groq: 'Groq', gemini: 'Google Gemini', openai: 'OpenAI', anthropic: 'Anthropic Claude' };
+
+  /** Reflect how AI scanning is actually wired up on THIS deployment. */
+  function renderAiStatus() {
+    const box = $('#ai-status');
+    if (!box) return;
+    const title = $('#ai-status-title');
+    const note = $('#ai-status-note');
+    const chips = () => {
+      const list = AIScan.serverProviders();
+      if (!list.length) return '';
+      return '<span class="ai-provider-chips">' +
+        list.map(id => '<span>' + (PROVIDER_NAMES[id] || id) + '</span>').join('') + '</span>';
+    };
+
+    if (AIScan.serverReady()) {
+      box.dataset.state = 'ready';
+      title.textContent = 'Ready — nothing to set up';
+      note.innerHTML = 'Card images are read by this site\u2019s own secure backend. ' +
+        'The API keys live on the server, never in your browser, and you never have to get one. ' +
+        'If a provider is busy the next one takes over automatically.' + chips();
+      $('#ai-own-key').open = false;
+      return;
+    }
+    if (AIScan.hasKey()) {
+      box.dataset.state = 'byok';
+      title.textContent = 'Using your own key';
+      note.textContent = 'This copy has no backend, so scans go straight from your browser to Anthropic with the key below.';
+      return;
+    }
+    box.dataset.state = 'off';
+    title.textContent = 'Not available here';
+    note.textContent = location.protocol === 'file:'
+      ? 'You opened the app as a local file. Local OCR works fully offline; for AI scanning, deploy the app (see README) or add your own key below.'
+      : 'This deployment has no AI keys configured. Local OCR still works for every card — or add your own key below.';
+  }
+
   function initSettings() {
     $('#btn-settings').addEventListener('click', () => openModal('modal-settings'));
+
+    renderAiStatus();
+    // one probe per page load; both this panel and the Scan tab read the result
+    AIScan.probe().then(() => { renderAiStatus(); Scanner.refreshEngineStatus(); });
 
     const keyInput = $('#set-api-key');
     keyInput.value = AIScan.getKey();
     keyInput.addEventListener('change', () => {
       AIScan.setKey(keyInput.value);
       toast(keyInput.value.trim() ? 'API key saved in this browser' : 'API key removed', 'ok');
+      renderAiStatus();
+      Scanner.refreshEngineStatus();
     });
     $('#key-show').addEventListener('click', () => {
       keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
@@ -274,7 +317,7 @@
   }
 
   window.App = {
-    toast, showTab, openModal, closeModal, downloadBlob, getVersion, setVersion,
+    toast, showTab, openModal, closeModal, downloadBlob, getVersion, setVersion, renderAiStatus,
     currentTab: () => currentTabName
   };
 

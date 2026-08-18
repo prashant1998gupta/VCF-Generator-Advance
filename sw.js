@@ -1,7 +1,7 @@
 /* Service worker — offline support when hosted.
    Same-origin: network-first (updates always win), cache fallback offline.
    CDN libraries (version-pinned): cache-first. */
-const CACHE = 'vcfgen-v3';
+const CACHE = 'vcfgen-v4';
 const SHELL = [
   '.', 'index.html', 'css/style.css', 'manifest.json', 'assets/icon.svg',
   'js/vcard.js', 'js/form.js', 'js/preview.js', 'js/qr.js', 'js/ocr.js',
@@ -23,6 +23,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
+
+  // never cache the API: a stale capability probe would hide keys added later,
+  // and scan responses are one-shot by nature
+  if (url.pathname.indexOf('/api/') !== -1) return;
 
   if (url.origin === location.origin) {
     // network-first: fresh app when online, cached shell offline

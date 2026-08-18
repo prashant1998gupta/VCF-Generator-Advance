@@ -1,0 +1,5 @@
+tests/
+dev-server.js
+.claude/
+*.md
+!README.md
